@@ -2,24 +2,19 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 // Main App component for T-Shirt Customization
 function App() {
-  // State variables for t-shirt customization options
-  const [selectedCut, setSelectedCut] = useState('crew-neck'); // Default t-shirt cut
-  const [selectedColor, setSelectedColor] = useState('#ffffff'); // Default t-shirt color (white)
-  const [selectedSize, setSelectedSize] = useState('M'); // Default t-shirt size
-  const [selectedDesign, setSelectedDesign] = useState(null); // Currently selected design object { id, src, alt }
-  const [designPosition, setDesignPosition] = useState({ x: 0, y: 0 }); // Position of the design on the t-shirt (relative to its center)
+  const [selectedCut, setSelectedCut] = useState('crew-neck');
+  const [selectedColor, setSelectedColor] = useState('#ffffff');
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedDesign, setSelectedDesign] = useState(null);
+  const [designPosition, setDesignPosition] = useState({ x: 0, y: 0 });
 
-  // State for modal visibility and content
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState('');
 
-  // Ref for the t-shirt display area to calculate design positions
   const tShirtRef = useRef(null);
-  // State for dragging functionality
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 }); // Offset from mouse click to design's top-left corner
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  // Predefined t-shirt designs using inline SVG for flexibility and scalability
   const predefinedTShirtDesigns = [
     {
       id: 'design1',
@@ -48,23 +43,19 @@ function App() {
     },
   ];
 
-  // State for user-added options
   const [customColors, setCustomColors] = useState([]);
   const [customSizes, setCustomSizes] = useState([]);
   const [customDesigns, setCustomDesigns] = useState([]);
 
-  // Input states for adding new options
   const [newColorInput, setNewColorInput] = useState('');
   const [newSizeInput, setNewSizeInput] = useState('');
   const [newDesignSvgInput, setNewDesignSvgInput] = useState('');
   const [newDesignAltInput, setNewDesignAltInput] = useState('');
 
-  // Combine predefined and custom options
   const availableColors = ['#ffffff', '#000000', '#ef4444', '#3b82f6', '#22c55e', '#facc15', '#a855f7', ...customColors];
   const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', ...customSizes];
   const availableDesigns = [...predefinedTShirtDesigns, ...customDesigns];
 
-  // Handler for starting the drag operation
   const handleMouseDown = useCallback((e) => {
     if (!selectedDesign) return;
     setIsDragging(true);
@@ -76,13 +67,12 @@ function App() {
     e.preventDefault();
   }, [selectedDesign]);
 
-  // Handler for dragging the design
   const handleMouseMove = useCallback((e) => {
     if (!isDragging || !tShirtRef.current) return;
 
     const tShirtRect = tShirtRef.current.getBoundingClientRect();
-    const designWidth = 96; // Fixed design width (w-24 in Tailwind)
-    const designHeight = 96; // Fixed design height (h-24 in Tailwind)
+    const designWidth = 96;
+    const designHeight = 96;
 
     let newX = e.clientX - tShirtRect.left - dragOffset.x;
     let newY = e.clientY - tShirtRect.top - dragOffset.y;
@@ -96,7 +86,6 @@ function App() {
     });
   }, [isDragging, dragOffset]);
 
-  // Handler for ending the drag operation
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
   }, []);
@@ -177,11 +166,11 @@ function App() {
               <button
                 key={cut}
                 onClick={() => setSelectedCut(cut)}
-                className={`px-4 py-2 rounded-lg border-2 font-medium capitalize transition-all duration-200
-                  ${selectedCut === cut
+                className={`px-4 py-2 rounded-lg border-2 font-medium capitalize transition-all duration-200 ${
+                  selectedCut === cut
                     ? 'bg-blue-600 text-white border-blue-600 shadow-md'
                     : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-400'
-                  }`}
+                }`}
               >
                 {cut.replace('-', ' ')}
               </button>
@@ -197,8 +186,9 @@ function App() {
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}
-                className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center
-                  ${selectedColor === color ? 'ring-4 ring-blue-500 ring-offset-2' : 'hover:ring-2 hover:ring-blue-300'}`}
+                className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                  selectedColor === color ? 'ring-4 ring-blue-500 ring-offset-2' : 'hover:ring-2 hover:ring-blue-300'
+                }`}
                 style={{ backgroundColor: color, borderColor: color === '#ffffff' ? '#ccc' : color }}
                 title={color}
               >
@@ -242,11 +232,11 @@ function App() {
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 rounded-lg border-2 font-medium transition-all duration-200
-                  ${selectedSize === size
+                className={`px-4 py-2 rounded-lg border-2 font-medium transition-all duration-200 ${
+                  selectedSize === size
                     ? 'bg-blue-600 text-white border-blue-600 shadow-md'
                     : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-400'
-                  }`}
+                }`}
               >
                 {size}
               </button>
@@ -277,11 +267,11 @@ function App() {
               <button
                 key={design.id}
                 onClick={() => setSelectedDesign(design)}
-                className={`p-3 border-2 rounded-lg flex items-center justify-center transition-all duration-200
-                  ${selectedDesign?.id === design.id
+                className={`p-3 border-2 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                  selectedDesign?.id === design.id
                     ? 'border-blue-600 ring-2 ring-blue-500 shadow-md'
                     : 'border-gray-300 hover:border-blue-400'
-                  }`}
+                }`}
                 title={design.alt}
               >
                 <div
@@ -292,11 +282,11 @@ function App() {
             ))}
             <button
               onClick={() => setSelectedDesign(null)}
-              className={`p-3 border-2 rounded-lg flex items-center justify-center transition-all duration-200 text-sm
-                ${selectedDesign === null
+              className={`p-3 border-2 rounded-lg flex items-center justify-center transition-all duration-200 text-sm ${
+                selectedDesign === null
                   ? 'border-blue-600 ring-2 ring-blue-500 shadow-md bg-blue-50'
                   : 'border-gray-300 hover:border-blue-400 bg-gray-100'
-                }`}
+              }`}
             >
               No Design
             </button>
@@ -306,7 +296,7 @@ function App() {
               placeholder="Paste SVG code here (<svg>...</svg>)"
               value={newDesignSvgInput}
               onChange={(e) => setNewDesignSvgInput(e.target.value)}
-              rows="3"
+              rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             ></textarea>
             <input
@@ -331,9 +321,9 @@ function App() {
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Your Custom T-Shirt</h2>
         <div
           ref={tShirtRef}
-          className={`relative w-full max-w-sm aspect-square rounded-lg flex items-center justify-center overflow-hidden border-4 border-gray-200 transition-colors duration-300
-            ${selectedCut === 'crew-neck' ? 'rounded-t-full' : 'rounded-t-lg'}
-          `}
+          className={`relative w-full max-w-sm aspect-square rounded-lg flex items-center justify-center overflow-hidden border-4 border-gray-200 transition-colors duration-300 ${
+            selectedCut === 'crew-neck' ? 'rounded-t-full' : 'rounded-t-lg'
+          }`}
           style={{ backgroundColor: selectedColor }}
         >
           {/* T-shirt image mockup */}
@@ -349,8 +339,9 @@ function App() {
 
           {selectedDesign && (
             <div
-              className={`absolute w-24 h-24 flex items-center justify-center transition-transform duration-100 ease-out
-                ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              className={`absolute w-24 h-24 flex items-center justify-center transition-transform duration-100 ease-out ${
+                isDragging ? 'cursor-grabbing' : 'cursor-grab'
+              }`}
               style={{
                 left: `calc(50% + ${designPosition.x}px)`,
                 top: `calc(50% + ${designPosition.y}px)`,
