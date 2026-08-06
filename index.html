@@ -1,3 +1,946 @@
-git add index.html
-   git commit -m "Add 10 dark earth tones to background dropdown"
-   git push origin main
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The controverse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000;
+            color: #f8fafc;
+        }
+        
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.25rem;
+            font-size: 8.5pt;
+            outline: none;
+            border-radius: 8px;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            border: 1px solid #1e293b;
+            transition: all 0.15s ease;
+        }
+        
+        select:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px #38bdf8;
+        }
+
+        #controls-container::-webkit-scrollbar,
+        #search-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+        #controls-container::-webkit-scrollbar-track,
+        #search-suggestions::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        #controls-container::-webkit-scrollbar-thumb,
+        #search-suggestions::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        #search-suggestions {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            background-color: #0f172a;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.8);
+            position: absolute;
+            width: 100%;
+            z-index: 20;
+            top: 100%;
+            left: 0; right: 0;
+            pointer-events: auto; 
+        }
+        .suggestion-item {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            color: #cbd5e1;
+            transition: background 0.1s ease;
+        }
+        .suggestion-item:hover { 
+            background-color: #1e293b; 
+            color: #f8fafc;
+        }
+        .suggestion-item.composition-suggestion {
+            font-weight: 600;
+            color: #38bdf8;
+            background-color: #172554;
+        }
+        .suggestion-item.composition-suggestion:hover { 
+            background-color: #1e3a8a; 
+        }
+
+        #display-box {
+            border: none;
+            box-shadow: none;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        
+        #trait-selection-panel {
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border: 1px solid #1e293b;
+        }
+
+        @media (min-width: 1024px) {
+            #display-box {
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+            }
+            #trait-selection-panel {
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+                border-top-right-radius: 12px;
+                border-bottom-right-radius: 12px;
+                border-left: none;
+            }
+        }
+
+        .modal {
+            position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background-color: #0f172a; 
+            padding: 24px; 
+            border-radius: 12px;
+            border: 1px solid #334155;
+            width: 90%; max-width: 380px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+        .close-button {
+            position: absolute; top: 12px; right: 16px;
+            font-size: 20px; font-weight: bold; cursor: pointer;
+            color: #94a3b8;
+        }
+        .close-button:hover { color: #f8fafc; }
+        .share-option-button {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; padding: 8px 12px; margin-bottom: 8px; border-radius: 6px;
+            font-size: 0.875rem; font-weight: 600; color: white; transition: opacity 0.15s;
+        }
+        .share-option-button:hover { opacity: 0.9; }
+        .share-option-button.download { background-color: #10b981; }
+        .share-option-button.x { background-color: #000000; border: 1px solid #334155; }
+        .share-option-button.linkedin { background-color: #0284c7; }
+        .share-option-button.copy { background-color: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-black">
+
+    <header class="w-full border-b border-slate-900 bg-black backdrop-blur sticky top-0 z-30 px-4 py-3">
+        <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+                <h1 class="text-base sm:text-lg font-bold tracking-tight text-white uppercase">The controverse</h1>
+            </div>
+            <span class="text-[10px] tracking-wider uppercase font-semibold text-slate-400 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-full">Portrait Builder</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col justify-center items-center p-4 sm:p-6 w-full mx-auto">
+        <div class="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row lg:items-stretch lg:justify-center lg:gap-0"> 
+            
+            <div id="left-content-panel" class="flex flex-col items-start w-full max-w-[500px] mx-auto flex-shrink-0 mb-0 lg:h-full lg:flex-1 lg:max-w-none">
+                <div id="display-box" class="relative w-full aspect-square overflow-hidden bg-gray-100 mb-0">
+                    <img id="layer-lowerFace" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-upperFace" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-shade" class="absolute inset-0 w-full h-full object-contain pointer-events-none" src="https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/shade/Shade.png" alt="Shade" crossorigin="anonymous">
+                    <img id="layer-hair" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-nose" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-outfit" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-props" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                </div>
+            </div>
+
+            <div id="trait-selection-panel" class="w-full max-w-[500px] mx-auto bg-slate-950 p-5 flex flex-col lg:h-full lg:flex-1 lg:min-w-[440px] lg:max-w-none">
+                
+                <div class="w-full mb-3 relative"> 
+                    <div class="relative w-full flex items-center">
+                        <input type="text" id="search-input" placeholder="Search name or trait..." class="w-full pl-3 pr-9 py-1.5 rounded-lg bg-black border border-slate-800 text-slate-200 placeholder-slate-500 text-xs focus:outline-none focus:border-sky-500 transition-colors">
+                        <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <div id="search-suggestions" class="hidden"></div>
+                    </div>
+                </div>
+
+                <div id="controls-container" class="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-2.5 flex-grow overflow-y-auto pr-1 content-start"></div>
+
+                <div class="w-full pt-3 mt-2 border-t border-slate-900 flex items-center space-x-2 flex-shrink-0">
+                    <button id="shuffle-button" class="flex-1 flex items-center justify-center text-slate-200 font-semibold text-xs px-3 py-1.5 rounded-md border border-slate-800 bg-slate-900 hover:bg-slate-800 active:bg-black transition-colors">
+                        <span>Shuffle</span>
+                        <svg class="ml-1.5 w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                    
+                    <button id="share-button" class="flex-1 flex items-center justify-center text-white font-semibold text-xs px-3 py-1.5 rounded-md bg-sky-600 hover:bg-sky-500 active:bg-sky-700 transition-colors">
+                        <span>Share</span>
+                        <svg class="ml-1.5 w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.885 12.938 9 12.482 9 12c0-.482-.115-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="share-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" id="close-share-modal">&times;</span>
+            <h2 class="text-base font-bold mb-1 text-slate-100">Share Your Artwork</h2>
+            <p class="mb-4 text-xs text-slate-400">Export your custom portrait or post to socials.</p>
+            <div class="flex flex-col space-y-2">
+                <a id="download-image-btn" download="the-controverse-portrait.png" class="share-option-button download">Download Image</a>
+                <button id="share-x-btn" class="share-option-button x">Share on X</button>
+                <button id="share-linkedin-btn" class="share-option-button linkedin">Share on LinkedIn</button>
+                <button id="copy-hashtags-btn" class="share-option-button copy">Copy Hashtags & Text</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            let controlsContainer, displayBox, traitSelectionPanel, searchInput, searchSuggestionsContainer, shuffleButton, leftContentPanel, shareButton, shareModal, closeShareModalButton, downloadImageButton, shareXButton, shareLinkedinButton, copyHashtagsButton;
+            let allCharacterCompositions;
+
+            const traitData = {
+                background: [
+                    { name: 'Sandy Shore', value: 'bg-yellow-50' },
+                    { name: 'Soft Clay', value: 'bg-amber-50' },
+                    { name: 'Misty Sage', value: 'bg-emerald-50' },
+                    { name: 'Pale Stone', value: 'bg-stone-100' },
+                    { name: 'Dusty Rose', value: 'bg-pink-50' },
+                    { name: 'Warm Granite', value: 'bg-gray-100' },
+                    { name: 'Desert Bloom', value: 'bg-orange-50' },
+                    { name: 'River Pebble', value: 'bg-neutral-100' },
+                    { name: 'Forest Haze', value: 'bg-green-50' },
+                    { name: 'Sunset Glow', value: 'bg-red-50' },
+                    { name: 'Morning Dew', value: 'bg-lime-50' },
+                    { name: 'Sky Ash', value: 'bg-slate-100' },
+                    { name: 'Deep Soil', value: 'bg-zinc-300' },
+                    { name: 'Ocean Whisper', value: 'bg-blue-50' },
+                    { name: 'Terra Cotta', value: 'bg-red-300' },
+                    { name: 'Deep Clay', value: 'bg-amber-950' },
+                    { name: 'Dark Moss', value: 'bg-emerald-950' },
+                    { name: 'Charred Earth', value: 'bg-stone-900' },
+                    { name: 'Raw Umber', value: 'bg-yellow-950' },
+                    { name: 'Pine Shadow', value: 'bg-green-950' },
+                    { name: 'Wet Soil', value: 'bg-zinc-900' },
+                    { name: 'Aged Bark', value: 'bg-orange-950' },
+                    { name: 'Basalt Rock', value: 'bg-neutral-900' },
+                    { name: 'Deep Canyon', value: 'bg-stone-950' },
+                    { name: 'Oxide Rust', value: 'bg-red-950' }
+                ],
+                props: [
+                    { name: 'None', imageUrl: '' },
+                    { name: "Bob's joint", imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Bob%27s%20joint.png' },
+                    { name: "Fidel's cigar", imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Fidel%27s%20Cigar.png' },
+                    { name: 'Kalashnikov', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Kalashnikov.png' },
+                    { name: 'Podium', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Podium.png' },
+                    { name: 'Red Halo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Red%20Halo.png' },
+                    { name: 'White Halo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/White%20Halo.png' }
+                ],
+                outfit: [
+                    { name: 'None', imageUrl: '' },
+                    { name: 'Adolf Hitler', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Hitler.png?raw=true' },
+                    { name: 'Andy Warhol', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Andy%20Warhol.png' },
+                    { name: 'Angela Merkel', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Angela%20Merkel.png' },
+                    { name: 'Ayatullah Khamenei', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Khamenei.png?raw=true' },
+                    { name: 'Ayatullah Khomeini', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Khomeini.png?raw=true' },
+                    { name: 'Bashar Al Assad', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Bashar%20al-Assad.png?raw=true' },
+                    { name: 'Bernie Sanders', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Bernie-01.png?raw=true' },
+                    { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Biggie.png?raw=true' },
+                    { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Bob%20Marley.png?raw=true' },
+                    { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Che%20Guevara.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Ronaldo.png?raw=true' },
+                    { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Dalai%20Lama.png?raw=true' },
+                    { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Donald%20Trump.png?raw=true' },
+                    { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Edward%20Snowden.png?raw=true' },
+                    { name: 'Elon Musk', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Elon%20Musk.png?raw=true' },
+                    { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Emmanuel%20Macron.png?raw=true' },
+                    { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Fidel%20Castro.png?raw=true' },
+                    { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Frida%20Kahlo.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Greta%20Thurnberg.png?raw=true' },
+                    { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Hassan%20Nasrallah.png?raw=true' },
+                    { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Henry%20Kissinger.png?raw=true' },
+                    { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Jeremy%20Corbyn-01.png?raw=true' },
+                    { name: 'Joe Biden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Joe%20Biden.png?raw=true' },
+                    { name: 'John Lennon', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/John%20Lennon.png?raw=true' },
+                    { name: 'Julian Assange', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Julian%20Assange.png?raw=true' },
+                    { name: 'Julian Assange Jacket', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Julian%20Assange%20Jacket.png?raw=true' },
+                    { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Jong%20Un.png?raw=true' },
+                    { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Kardashian.png?raw=true' },
+                    { name: 'Kim Kardashian Hoodie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Kardashian%20-%20Hoodie.png?raw=true' },
+                    { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Lady%20D.png?raw=true' },
+                    { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Lionel%20Messi.png?raw=true' },
+                    { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mahatma%20Gandhi.png?raw=true' },
+                    { name: 'Marilyn Monroe', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Marilyn%20Monroe.png?raw=true' },
+                    { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mark%20Zuckerberg.png?raw=true' },
+                    { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Martin%20Luther%20King.png?raw=true' },
+                    { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jackson%20-%20Red.png?raw=true' },
+                    { name: 'Michael Jackson Black', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jackson%20-%20Black.png?raw=true' },
+                    { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jordan.png?raw=true' },
+                    { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mike%20Tyson.png?raw=true' },
+                    { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mohammed%20bin%20Rashid%20Al%20Maktoum.png?raw=true' },
+                    { name: 'Mohammed bin Salman', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mohammed%20bin%20Salman%20Al%20Saud.png?raw=true' },
+                    { name: 'Mother Theresa', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mother%20Theresa.png?raw=true' },
+                    { name: 'Narendra Modi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Narendra%20Modi.png?raw=true' },
+                    { name: 'Nelson Mandela', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Nelson%20Mandela.png?raw=true' },
+                    { name: 'Olaf Scholz', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Olaf%20Scholz.png?raw=true' },
+                    { name: 'Oprah Winfrey', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Oprah%20Winfrey.png?raw=true' },
+                    { name: 'Pope Francis', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Pope%20Francis.png?raw=true' },
+                    { name: 'Recep Tayyip Erdogan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Recep%20Tayyip%20Erdog%CC%86an.png?raw=true' },
+                    { name: 'Saddam Hussein', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Saddam%20Hussein.png?raw=true' },
+                    { name: 'Salvador Dali', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Dali.png?raw=true' },
+                    { name: 'Serena Williams', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Serena%20Williams.png?raw=true' },
+                    { name: 'Snoop Dog', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Snoop%20Dog.png?raw=true' },
+                    { name: 'Steve Jobs', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Steve%20Jobs.png?raw=true' },
+                    { name: 'Tupac', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Tupac.png?raw=true' },
+                    { name: 'Ursula Von Der Leyen', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Ursula%20von%20der%20Leyen.png?raw=true' },
+                    { name: 'Vladimir Putin', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Vladimir%20Putin.png?raw=true' },
+                    { name: 'Volodymyr Zelensky', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Volodymyr%20Zelenskyy.png?raw=true' },
+                    { name: 'Xi Jinping', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Xi%20Jinping.png?raw=true' },
+                    { name: 'Yasser Arafat', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Yasser%20Arafat.png?raw=true' }
+                ],
+                nose: [
+                    { name: 'None', imageUrl: '' },
+                    { name: 'Adolf Hitler', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Hitler.png?raw=true' },
+                    { name: 'Andy Warhol', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Andy-Warhol.png?raw=true' },
+                    { name: 'Angela Merkel', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Angela-Merkel.png?raw=true' },
+                    { name: 'Ayatullah Khamenei', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Khamenei.png?raw=true' },
+                    { name: 'Ayatullah Khomeini', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Khomeini.png?raw=true' },
+                    { name: 'Bashar Al Assad', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Bashar-al-Assad.png?raw=true' },
+                    { name: 'Bernie Sanders', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Bernie-Sanders.png?raw=true' },
+                    { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Biggie.png?raw=true' },
+                    { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Bob-Marley.png?raw=true' },
+                    { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Che-Guevara.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Ronaldo.png?raw=true' },
+                    { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Dalai-Lama.png?raw=true' },
+                    { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Donald-Trump.png?raw=true' },
+                    { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Edward-Snowden.png?raw=true' },
+                    { name: 'Elon Musk', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Elon-Musk.png?raw=true' },
+                    { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Emmanuel-Macron.png?raw=true' },
+                    { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Fidel-Castro.png?raw=true' },
+                    { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Frida.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Greta-Thunberg.png?raw=true' },
+                    { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Hassan-Nasrallah.png?raw=true' },
+                    { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Henry-Kissinger.png?raw=true' },
+                    { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Jeremy-Corbyn.png?raw=true' },
+                    { name: 'Joe Biden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Joe-Biden.png?raw=true' },
+                    { name: 'John Lennon', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/John-Lennon.png?raw=true' },
+                    { name: 'Julian Assange', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Julian-Assange.png?raw=true' },
+                    { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Kim-Jong-Un.png?raw=true' },
+                    { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Kim-Kardashian.png?raw=true' },
+                    { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Lady-D.png?raw=true' },
+                    { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Lionel-Messi.png?raw=true' },
+                    { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mahatma-Gandhi.png?raw=true' },
+                    { name: 'Marilyn Monroe', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Marilyn-Monroe.png?raw=true' },
+                    { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mark-Zuckerberg.png?raw=true' },
+                    { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Martin-Luther-King.png?raw=true' },
+                    { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Michael-Jackson.png?raw=true' },
+                    { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Michael-Jordan.png?raw=true' },
+                    { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mike-Tyson.png?raw=true' },
+                    { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mohammed-bin-Rashid-Al-Maktoum.png?raw=true' },
+                    { name: 'Mohammed bin Salman', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mohammed-bin-Salman-Al-Saud.png?raw=true' },
+                    { name: 'Mother Theresa', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Mother-Theresa.png?raw=true' },
+                    { name: 'Narendra Modi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Narendra-Modi.png?raw=true' },
+                    { name: 'Nelson Mandela', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Nelson-Mandela.png?raw=true' },
+                    { name: 'Olaf Scholz', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Olaf-Scholz.png?raw=true' },
+                    { name: 'Oprah Winfrey', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Oprah-Winfrey.png?raw=true' },
+                    { name: 'Pope Francis', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Pope-Francis.png?raw=true' },
+                    { name: 'Queen Elizabeth II', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Queen-Elizabeth-II.png?raw=true' },
+                    { name: 'Recep Tayyip Erdogan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Recep-Tayyip-Erdog%CC%86an.png?raw=true' },
+                    { name: 'Saddam Hussein', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Saddam-Hussein.png?raw=true' },
+                    { name: 'Salvador Dali', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Dali.png?raw=true' },
+                    { name: 'Serena Williams', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Serena-Williams.png?raw=true' },
+                    { name: 'Snoop Dog', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Snoop-Dog.png?raw=true' },
+                    { name: 'Steve Jobs', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Steve-Jobs.png?raw=true' },
+                    { name: 'Tupac', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Tupac.png?raw=true' },
+                    { name: 'Ursula Von der Leyen', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Ursula-von-der-Leyen.png?raw=true' },
+                    { name: 'Vladimir Putin', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Vladimir-Putin.png?raw=true' },
+                    { name: 'Volodymyr Zelensky', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Volodymyr-Zelenskyy.png?raw=true' },
+                    { name: 'Xi Jinping', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Xi-Jinping.png?raw=true' },
+                    { name: 'Yasser Arafat', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Yasser-Arafat.png?raw=true' }
+                ],
+                hair: [
+                    { name: 'None', imageUrl: '' },
+                    { name: 'Adolf Hitler', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Hitler.png?raw=true' },
+                    { name: 'Andy Warhol', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Andy-Warhol.png' },
+                    { name: 'Angela Merkel', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Angela%20Merkel.png' },
+                    { name: 'Ayatullah Khamenei', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Khamenei.png?raw=true' },
+                    { name: 'Ayatullah Khomeini', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Khomeini.png?raw=true' },
+                    { name: 'Bashar Al Assad', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Bashar-al-Assad.png' },
+                    { name: 'Bernie Sanders', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Bernie-Sanders.png' },
+                    { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Biggie.png' },
+                    { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Bob-Marley.png' },
+                    { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Che-Guevara.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/refs/heads/main/hair/Ronaldo.png?raw=true' },
+                    { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Dalai-Lama.png?raw=true' },
+                    { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Donald-Trump.png?raw=true' },
+                    { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Edward-Snowden.png?raw=true' },
+                    { name: 'Elon Musk', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Elon-Musk.png?raw=true' },
+                    { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Emmanuel-Macron.png?raw=true' },
+                    { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Fidel-Castro.png?raw=true' },
+                    { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Frida.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Greta-Thunberg.png?raw=true' },
+                    { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Hassan-Nasrallah.png?raw=true' },
+                    { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Henry-Kissinger.png?raw=true' },
+                    { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Jeremy-Corbyn.png?raw=true' },
+                    { name: 'Joe Biden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Joe-Biden.png?raw=true' },
+                    { name: 'John Lennon', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/John-Lennon-2.png?raw=true' },
+                    { name: 'John Lennon (long)', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/John-Lennon-1.png?raw=true' },
+                    { name: 'Julian Assange', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Julian-Assange.png?raw=true' },
+                    { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Kim%20Jong%20Un.png?raw=true' },
+                    { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Kim%20Kardashian%20-Brunette.png?raw=true' },
+                    { name: 'Kim Kardashian (blond)', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Kim%20Kardashian%20-%20%20Blond.png?raw=true' },
+                    { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Lady-D.png?raw=true' },
+                    { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Lionel-Messi.png?raw=true' },
+                    { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mahatma-Gandhi.png?raw=true' },
+                    { name: 'Marilyn Monroe', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Marilyn-Monroe.png?raw=true' },
+                    { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mark-Zuckerberg.png?raw=true' },
+                    { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Martin-Luther-King.png?raw=true' },
+                    { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Michael-Jackson.png?raw=true' },
+                    { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Michael-Jordan.png?raw=true' },
+                    { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mike-Tyson.png?raw=true' },
+                    { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mohammed-bin-Rashid-Al-Maktoum.png?raw=true' },
+                    { name: 'Mohammed bin Salman', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mohammed-bin-Salman-Al-Saud.png?raw=true' },
+                    { name: 'Mother Theresa', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Mother-Theresa.png?raw=true' },
+                    { name: 'Narendra Modi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Narendra-Modi.png?raw=true' },
+                    { name: 'Nelson Mandela', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Nelson-Mandela.png?raw=true' },
+                    { name: 'Olaf Scholz', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Olaf-Scholz.png?raw=true' },
+                    { name: 'Oprah Winfrey', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Oprah-Winfrey.png?raw=true' },
+                    { name: 'Pope Francis', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Pope-Francis.png?raw=true' },
+                    { name: 'Queen Elizabeth II', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Queen-Elizabeth-II.png?raw=true' },
+                    { name: 'Recep Tayyip Erdogan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Recep-Tayyip-Erdog%CC%86an.png?raw=true' },
+                    { name: 'Saddam Hussein', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Saddam-Hussein.png?raw=true' },
+                    { name: 'Salvador Dali', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Dali.png?raw=true' },
+                    { name: 'Serena Williams', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Serena-Williams.png?raw=true' },
+                    { name: 'Snoop Dog', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Snoop-Dog.png?raw=true' },
+                    { name: 'Steve Jobs', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Steve-Jobs.png?raw=true' },
+                    { name: 'Tupac', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Tupac.png?raw=true' },
+                    { name: 'Tupac (cap)', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Tupac%20Cap.png?raw=true' },
+                    { name: 'Ursula Von der Leyen', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Ursula-von-der-Leyen.png?raw=true' },
+                    { name: 'Vladimir Putin', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Vladimir-Putin.png?raw=true' },
+                    { name: 'Volodymyr Zelensky', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Volodymyr-Zelenskyy.png?raw=true' },
+                    { name: 'Xi Jinping', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Xi-Jinping.png?raw=true' },
+                    { name: 'Yasser Arafat', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/hair/Yasser-Arafat.png?raw=true' }
+                ],
+                upperFace: [
+                    { name: 'None', imageUrl: '' },
+                    { name: 'Adolf Hitler', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Hitler.png?raw=true' },
+                    { name: 'Andy Warhol', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Andy-Warhol.png' },
+                    { name: 'Angela Merkel', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Angela-Merkel.png' },
+                    { name: 'Ayatullah Khamenei', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Khamenei.png?raw=true' },
+                    { name: 'Ayatullah Khomeini', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Khomeini.png?raw=true' },
+                    { name: 'Bashar Al Assad', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Bashar-al-Assad.png' },
+                    { name: 'Bernie Sanders', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Bernie-Sanders.png' },
+                    { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Biggie.png' },
+                    { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Bob-Marley.png' },
+                    { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Che-Guevara.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Ronaldo.png?raw=true' },
+                    { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/dalai-lama.png?raw=true' },
+                    { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Donald-Trump.png?raw=true' },
+                    { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Edward-Snowden.png?raw=true' },
+                    { name: 'Elon Musk', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Elon-Musk.png?raw=true' },
+                    { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Emmanuel-Macron.png?raw=true' },
+                    { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Fidel-Castro.png?raw=true' },
+                    { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Frida.png?raw=true' },
+                    { name: 'Greta Thurnberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Greta-Thunberg.png?raw=true' },
+                    { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Hassan-Nasrallah.png?raw=true' },
+                    { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Henry-Kissinger.png?raw=true' },
+                    { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Jeremy-Corbyn.png?raw=true' },
+                    { name: 'Joe Biden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Joe-Biden.png?raw=true' },
+                    { name: 'John Lennon', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/John-Lennon.png?raw=true' },
+                    { name: 'Julian Assange', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Julian-Assange.png?raw=true' },
+                    { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Kim-Jong-Un.png?raw=true' },
+                    { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Kim-Kardashian.png?raw=true' },
+                    { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Lady-D.png?raw=true' },
+                    { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Lionel-Messi.png?raw=true' },
+                    { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mahatma-Gandhi.png?raw=true' },
+                    { name: 'Marilyn Monroe', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Marilyn-Monroe.png?raw=true' },
+                    { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mark-Zuckerberg.png?raw=true' },
+                    { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Martin-Luther-King.png?raw=true' },
+                    { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Michael-Jackson.png?raw=true' },
+                    { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Michael-Jordan.png?raw=true' },
+                    { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mike-Tyson.png?raw=true' },
+                    { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mohammed-bin-Rashid-Al-Maktoum.png?raw=true' },
+                    { name: 'Mohammed bin Salman', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mohammed-bin-Salman-Al-Saud.png?raw=true' },
+                    { name: 'Mother Theresa', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Mother-Theresa.png?raw=true' },
+                    { name: 'Narendra Modi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Narendra-Modi.png?raw=true' },
+                    { name: 'Nelson Mandela', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Nelson-Mandela.png?raw=true' },
+                    { name: 'Olaf Scholz', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Olaf-Scholz.png?raw=true' },
+                    { name: 'Oprah Winfrey', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Oprah-Winfrey.png?raw=true' },
+                    { name: 'Pope Francis', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Pope-Francis.png?raw=true' },
+                    { name: 'Queen Elizabeth II', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Queen-Elizabeth-II.png?raw=true' },
+                    { name: 'Recep Tayyip Erdogan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Recep-Tayyip-Erdog%CC%86an.png?raw=true' },
+                    { name: 'Saddam Hussein', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Saddam-Hussein.png?raw=true' },
+                    { name: 'Salvador Dali', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Dali.png?raw=true' },
+                    { name: 'Serena Williams', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Serena-Williams.png?raw=true' },
+                    { name: 'Snoop Dog', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Snoop-Dog.png?raw=true' },
+                    { name: 'Steve Jobs', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Steve-Jobs.png?raw=true' },
+                    { name: 'Tupac', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Tupac.png?raw=true' },
+                    { name: 'Ursula Von der Leyen', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Ursula-von-der-Leyen.png?raw=true' },
+                    { name: 'Vladimir Putin', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Vladimir-Putin.png?raw=true' },
+                    { name: 'Volodymyr Zelensky', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Volodymyr-Zelenskyy.png?raw=true' },
+                    { name: 'Xi Jinping', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Xi-Jinping.png?raw=true' },
+                    { name: 'Yasser Arafat', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Yasser-Arafat.png?raw=true' }
+                ],
+                lowerFace: [
+                    { name: 'None', imageUrl: '' },
+                    { name: 'Adolf Hitler', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Hitler.png?raw=true' },
+                    { name: 'Ayatullah Khamenei', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Khamenei.png?raw=true' },
+                    { name: 'Ayatullah Khomeini', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Khomeini.png?raw=true' },
+                    { name: 'Andy Warhol', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Andy%20Warhol.png' },
+                    { name: 'Angela Merkel', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Angela%20Merkel.png' },
+                    { name: 'Bashar Al Assad', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Bashar%20al-Assad.png' },
+                    { name: 'Bernie Sanders', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Bernie%20Sanders.png' },
+                    { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Biggie.png' },
+                    { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Bob%20Marley.png' },
+                    { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Che%20Guevara.png?raw=true' },
+                    { name: 'Christiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Ronaldo.png?raw=true' },
+                    { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Dalai%20Lama.png?raw=true' },
+                    { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Donald%20Trump.png?raw=true' },
+                    { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Edward%20Snowden.png?raw=true' },
+                    { name: 'Elon Musk', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Elon%20Musk.png?raw=true' },
+                    { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Emmanuel%20Macron.png?raw=true' },
+                    { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Fidel%20Castro.png?raw=true' },
+                    { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Frida%20Kahlo.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Greta%20Thurnberg.png?raw=true' },
+                    { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Hassan%20Nasrallah.png?raw=true' },
+                    { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Henry%20Kissinger.png?raw=true' },
+                    { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Jeremy%20Corbyn.png?raw=true' },
+                    { name: 'Joe Biden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Joe%20Biden.png?raw=true' },
+                    { name: 'John Lennon', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/John%20Lennon%202.png?raw=true' },
+                    { name: 'John Lennon (beard)', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/John%20Lennon%201.png?raw=true' },
+                    { name: 'Julian Assange', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Julian%20Assange.png?raw=true' },
+                    { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Kim%20Jong%20Un.png?raw=true' },
+                    { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Kim%20Kardashian.png?raw=true' },
+                    { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Lady%20D.png?raw=true' },
+                    { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Lionel%20Messi.png?raw=true' },
+                    { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mahatma%20Gandhi.png?raw=true' },
+                    { name: 'Marilyn Monroe', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Marilyn%20Monroe.png?raw=true' },
+                    { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mark%20Zuckerberg.png?raw=true' },
+                    { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Martin%20Luther%20King.png?raw=true' },
+                    { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Michael%20Jackson.png?raw=true' },
+                    { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Michael%20Jordan.png?raw=true' },
+                    { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mike%20Tyson.png?raw=true' },
+                    { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mohammed%20bin%20Rashid%20Al%20Maktoum.png?raw=true' },
+                    { name: 'Mohammed bin Salman', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mohammed%20bin%20Salman%20Al%20Saud.png?raw=true' },
+                    { name: 'Mother Theresa', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Mother%20Theresa.png?raw=true' },
+                    { name: 'Narendra Modi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Narendra%20Modi.png?raw=true' },
+                    { name: 'Nelson Mandela', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Nelson%20Mandela.png?raw=true' },
+                    { name: 'Olaf Scholz', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Olaf%20Scholz.png?raw=true' },
+                    { name: 'Oprah Winfrey', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Oprah%20Winfrey.png?raw=true' },
+                    { name: 'Pope Francis', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Pope%20Francis.png?raw=true' },
+                    { name: 'Queen Elizabeth II', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Queen%20Elizabeth%20II.png?raw=true' },
+                    { name: 'Recep Tayyip Erdogan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Recep-Tayyip-Erdog%CC%86an.png?raw=true' },
+                    { name: 'Saddam Hussein', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Saddam-Hussein.png?raw=true' },
+                    { name: 'Salvador Dali', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Dali.png?raw=true' },
+                    { name: 'Serena Williams', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Serena%20Williams.png?raw=true' },
+                    { name: 'Snoop Dog', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Snoop%20Dog.png?raw=true' },
+                    { name: 'Steve Jobs', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Steve%20Jobs.png?raw=true' },
+                    { name: 'Tupac', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Tupac.png?raw=true' },
+                    { name: 'Ursula Von der Leyen', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Ursula%20von%20der%20Leyen.png?raw=true' },
+                    { name: 'Vladimir Putin', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Vladimir%20Putin.png?raw=true' },
+                    { name: 'Volodymyr Zelensky', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Volodymyr-Zelenskyy.png?raw=true' },
+                    { name: 'Xi Jinping', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Xi-Jinping.png?raw=true' },
+                    { name: 'Yasser Arafat', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Yasser-Arafat.png?raw=true' }
+                ],
+            };
+            
+            const categoryOrder = ['hair', 'upperFace', 'nose', 'lowerFace', 'outfit', 'props', 'background'];
+            
+            function createDropdowns() {
+                controlsContainer.innerHTML = ''; 
+
+                categoryOrder.forEach(categoryKey => {
+                    let traits = [...traitData[categoryKey]];
+                    const readableName = categoryKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+
+                    const noneTrait = traits.find(trait => trait.name === 'None');
+                    let sortedTraits = traits.filter(trait => trait.name !== 'None');
+
+                    // If it's background, keep the original order to preserve the new earth tones appended at the end
+                    if (categoryKey !== 'background') {
+                        sortedTraits.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+
+                    if (noneTrait) {
+                        sortedTraits.unshift(noneTrait);
+                    }
+
+                    const container = document.createElement('div');
+                    container.className = 'flex flex-col';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `select-${categoryKey}`;
+                    label.className = 'block text-slate-400 text-[11px] font-semibold tracking-wide uppercase mb-1';
+                    label.textContent = readableName;
+
+                    const select = document.createElement('select');
+                    select.id = `select-${categoryKey}`;
+                    select.className = 'block appearance-none w-full bg-black border border-slate-800 text-slate-200 py-1.5 px-2.5 rounded-md leading-tight focus:outline-none focus:border-sky-500 text-xs';
+                    
+                    sortedTraits.forEach(trait => {
+                        const option = document.createElement('option');
+                        option.textContent = trait.name;
+                        option.value = categoryKey === 'background' ? trait.value : trait.imageUrl; 
+                        select.appendChild(option);
+                    });
+                    
+                    if (categoryKey === 'props') {
+                        select.value = ''; 
+                    }
+
+                    select.addEventListener('change', updateDisplay);
+
+                    container.appendChild(label);
+                    container.appendChild(select);
+                    controlsContainer.appendChild(container);
+                });
+            }
+
+            function updateDisplay() {
+                categoryOrder.forEach(categoryKey => {
+                    const select = document.getElementById(`select-${categoryKey}`);
+                    const selectedValue = select.value;
+
+                    if (categoryKey === 'background') {
+                        const bgClasses = traitData.background.map(t => t.value);
+                        displayBox.classList.remove(...bgClasses);
+
+                        displayBox.classList.add(selectedValue);
+                    } else {
+                        const imgLayer = document.getElementById(`layer-${categoryKey}`);
+                        if(imgLayer) {
+                            if (selectedValue === '') {
+                                imgLayer.removeAttribute('src');
+                                imgLayer.style.display = 'none';
+                                imgLayer.alt = '';
+                            } else {
+                                imgLayer.src = selectedValue;
+                                imgLayer.style.display = 'block';
+                                const selectedTraitObj = traitData[categoryKey].find(trait => trait.imageUrl === selectedValue);
+                                imgLayer.alt = selectedTraitObj ? selectedTraitObj.name : 'Trait image';
+                            }
+                        }
+                    }
+                });
+                adjustPanelHeight();
+            }
+
+            function shuffle() {
+                categoryOrder.forEach(categoryKey => {
+                    const select = document.getElementById(`select-${categoryKey}`);
+                    const traits = traitData[categoryKey];
+                    let randomTrait;
+
+                    if (categoryKey === 'background') {
+                        const randomIndex = Math.floor(Math.random() * traits.length);
+                        randomTrait = traits[randomIndex];
+                    } else if (categoryKey === 'props') {
+                        randomTrait = traits.find(t => t.name === 'None');
+                        if (!randomTrait) {
+                            randomTrait = traits[0]; 
+                        }
+                    } 
+                    else {
+                        const selectableTraits = traits.filter(t => t.name !== 'None');
+                        if (selectableTraits.length > 0) {
+                            const randomIndex = Math.floor(Math.random() * selectableTraits.length);
+                            randomTrait = selectableTraits[randomIndex];
+                        } else {
+                            randomTrait = { name: 'None', imageUrl: '' };
+                        }
+                    }
+                    
+                    select.value = (categoryKey === 'background' ? randomTrait.value : randomTrait.imageUrl);
+                });
+                updateDisplay();
+            }
+
+            function adjustPanelHeight() {
+                if (leftContentPanel && traitSelectionPanel) {
+                    if (window.innerWidth >= 1024) {
+                        const leftContentHeight = displayBox.offsetHeight;
+                        traitSelectionPanel.style.height = `${leftContentHeight}px`;
+                        traitSelectionPanel.style.overflowY = 'hidden';
+                    } else {
+                        traitSelectionPanel.style.height = '';
+                        traitSelectionPanel.style.overflowY = 'visible';
+                    }
+                }
+            }
+
+            function getSelectedTraitsAsHashtags() {
+                let hashtags = ["#thecontroverse"];
+                categoryOrder.forEach(categoryKey => {
+                    const select = document.getElementById(`select-${categoryKey}`);
+                    if (select) {
+                        const selectedOptionText = select.options[select.selectedIndex].textContent;
+                        if (selectedOptionText && selectedOptionText !== 'None') {
+                            const formattedTrait = selectedOptionText.replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '');
+                            if (formattedTrait) {
+                                hashtags.push(`#${formattedTrait}`);
+                            }
+                        }
+                    }
+                });
+                return hashtags.join(' ');
+            }
+
+            async function copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch (err) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                    } catch (err2) {
+                        console.error('Failed to copy text:', err2);
+                    } finally {
+                        document.body.removeChild(textarea);
+                    }
+                }
+            }
+
+            async function shareComposition() {
+                shareModal.style.display = 'flex';
+
+                try {
+                    const canvas = await html2canvas(displayBox, {
+                        allowTaint: true,
+                        useCORS: true,
+                        scale: 2,
+                        backgroundColor: null
+                    });
+
+                    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                    downloadImageButton.href = imageDataUrl;
+
+                    const shareText = "Check out my portrait creation on The controverse! ";
+                    const hashtags = getSelectedTraitsAsHashtags();
+                    const fullShareText = `${shareText} ${hashtags}`;
+
+                    shareXButton.onclick = () => {
+                        const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullShareText)}`;
+                        window.open(xUrl, '_blank');
+                    };
+
+                    shareLinkedinButton.onclick = () => {
+                        const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(fullShareText)}&source=TheControverse`;
+                        window.open(linkedinUrl, '_blank');
+                    };
+
+                    copyHashtagsButton.onclick = () => {
+                        copyToClipboard(fullShareText);
+                    };
+
+                } catch (error) {
+                    console.error('Error generating image for sharing:', error);
+                    alert('Could not prepare image for sharing. Please try again.');
+                    shareModal.style.display = 'none';
+                }
+            }
+
+            function filterAndDisplaySuggestions() {
+                const query = searchInput.value.toLowerCase().trim();
+                searchSuggestionsContainer.innerHTML = '';
+
+                if (query.length < 2) {
+                    searchSuggestionsContainer.classList.add('hidden');
+                    return;
+                }
+
+                let suggestions = [];
+                let hasCompositionMatch = false;
+
+                for (const lowerName in allCharacterCompositions) {
+                    if (lowerName.includes(query)) {
+                        const charData = allCharacterCompositions[lowerName];
+                        suggestions.push({
+                            type: 'composition',
+                            displayText: `${charData.name} (Full Character)`,
+                            traits: charData.traits,
+                            relevance: lowerName.startsWith(query) ? 2 : 1
+                        });
+                        hasCompositionMatch = true;
+                    }
+                }
+
+                if (!hasCompositionMatch || query.length >= 3) {
+                    for (const categoryKey in traitData) {
+                        const readableCategoryName = categoryKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        if (Array.isArray(traitData[categoryKey])) {
+                            traitData[categoryKey].forEach(trait => {
+                                if (trait.name !== 'None' && trait.name.toLowerCase().includes(query)) {
+                                    suggestions.push({
+                                        type: 'trait',
+                                        displayText: `${trait.name} (${readableCategoryName})`,
+                                        category: categoryKey,
+                                        value: categoryKey === 'background' ? trait.value : trait.imageUrl,
+                                        relevance: trait.name.toLowerCase().startsWith(query) ? 2 : 1
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+
+                suggestions.sort((a, b) => {
+                    if (a.type === 'composition' && b.type !== 'composition') return -1;
+                    if (a.type !== 'composition' && b.type === 'composition') return 1;
+                    if (b.relevance !== a.relevance) return b.relevance - a.relevance;
+                    return a.displayText.localeCompare(b.displayText);
+                });
+
+                if (suggestions.length > 0) {
+                    suggestions.forEach(match => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        if (match.type === 'composition') {
+                            suggestionItem.classList.add('composition-suggestion');
+                        }
+                        
+                        suggestionItem.textContent = match.displayText;
+                        suggestionItem.dataset.type = match.type;
+                        suggestionItem.dataset.category = match.category || '';
+                        suggestionItem.dataset.value = match.value || '';
+
+                        if (match.type === 'composition') {
+                            suggestionItem.compositionTraits = match.traits; 
+                        }
+
+                        suggestionItem.addEventListener('mousedown', function(e) {
+                            e.preventDefault(); 
+                        });
+
+                        suggestionItem.addEventListener('click', function() {
+                            const clickedType = this.dataset.type;
+
+                            if (clickedType === 'composition') {
+                                const traitsToApply = this.compositionTraits;
+                                for (const charCategory in traitsToApply) {
+                                    const charTraitValue = traitsToApply[charCategory];
+                                    const targetSelect = document.getElementById(`select-${charCategory}`);
+                                    if (targetSelect) {
+                                        targetSelect.value = charTraitValue;
+                                    }
+                                }
+                                const backgroundSelect = document.getElementById('select-background');
+                                if (backgroundSelect && traitsToApply.background) {
+                                    backgroundSelect.value = traitsToApply.background;
+                                } else if (backgroundSelect) {
+                                    const defaultBg = traitData.background.find(t => t.name === 'Warm Granite')?.value || traitData.background[0].value;
+                                    backgroundSelect.value = defaultBg;
+                                }
+
+                            } else {
+                                const selectedCategory = this.dataset.category;
+                                const selectedValue = this.dataset.value;
+                                const targetSelect = document.getElementById(`select-${selectedCategory}`);
+                                if (targetSelect) {
+                                    targetSelect.value = selectedValue;
+                                }
+                            }
+                            updateDisplay();
+                            searchInput.value = '';
+                            searchSuggestionsContainer.classList.add('hidden');
+                        });
+                        searchSuggestionsContainer.appendChild(suggestionItem);
+                    });
+                    searchSuggestionsContainer.classList.remove('hidden');
+                } else {
+                    searchSuggestionsContainer.classList.add('hidden');
+                }
+            }
+
+            function init() {
+                controlsContainer = document.getElementById('controls-container');
+                displayBox = document.getElementById('display-box');
+                traitSelectionPanel = document.getElementById('trait-selection-panel');
+                searchInput = document.getElementById('search-input');
+                searchSuggestionsContainer = document.getElementById('search-suggestions');
+                shuffleButton = document.getElementById('shuffle-button'); 
+                leftContentPanel = document.getElementById('left-content-panel');
+                shareButton = document.getElementById('share-button'); 
+                shareModal = document.getElementById('share-modal'); 
+                closeShareModalButton = document.getElementById('close-share-modal'); 
+                downloadImageButton = document.getElementById('download-image-btn'); 
+                shareXButton = document.getElementById('share-x-btn'); 
+                shareLinkedinButton = document.getElementById('share-linkedin-btn'); 
+                copyHashtagsButton = document.getElementById('copy-hashtags-btn'); 
+                
+                allCharacterCompositions = {};
+                for (const categoryKey in traitData) {
+                    if (Array.isArray(traitData[categoryKey])) { 
+                        traitData[categoryKey].forEach(trait => {
+                            if (trait.name !== 'None') {
+                                const lowerName = trait.name.toLowerCase();
+                                if (!allCharacterCompositions[lowerName]) {
+                                    allCharacterCompositions[lowerName] = { name: trait.name, traits: {} };
+                                }
+                                allCharacterCompositions[lowerName].traits[categoryKey] = (categoryKey === 'background' ? trait.value : trait.imageUrl);
+                            }
+                        });
+                    }
+                }
+
+                if (shuffleButton) {
+                    shuffleButton.addEventListener('click', shuffle);
+                }
+                
+                if (searchInput) {
+                    searchInput.addEventListener('input', filterAndDisplaySuggestions);
+                    searchInput.addEventListener('focus', filterAndDisplaySuggestions);
+                    searchInput.addEventListener('blur', function() {
+                        setTimeout(() => {
+                            searchSuggestionsContainer.classList.add('hidden');
+                        }, 200); 
+                    });
+                }
+
+                if (shareButton) {
+                    shareButton.addEventListener('click', shareComposition);
+                }
+
+                if (closeShareModalButton) {
+                    closeShareModalButton.addEventListener('click', () => {
+                        shareModal.style.display = 'none';
+                    });
+                }
+
+                createDropdowns(); 
+                shuffle(); 
+                adjustPanelHeight(); 
+                window.addEventListener('resize', adjustPanelHeight);
+            }
+
+            init(); 
+        })();
+    </script>
+</body>
+</html>
