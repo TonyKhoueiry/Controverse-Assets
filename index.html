@@ -3,239 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avatar Customizer</title>
+    <title>The controverse</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <style>
         body {
-            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000;
+            color: #f8fafc;
         }
+        
         select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.5rem center;
             background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            font-size: 8pt;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.25rem;
+            font-size: 8.5pt;
             outline: none;
-            border-radius: 10px;
+            border-radius: 8px;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            border: 1px solid #1e293b;
+            transition: all 0.15s ease;
         }
+        
+        select:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px #38bdf8;
+        }
+
+        #controls-container::-webkit-scrollbar,
+        #search-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+        #controls-container::-webkit-scrollbar-track,
+        #search-suggestions::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        #controls-container::-webkit-scrollbar-thumb,
+        #search-suggestions::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
         #search-suggestions {
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #334155;
             border-radius: 0.5rem;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #0f172a;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.8);
             position: absolute;
             width: 100%;
-            z-index: 10;
+            z-index: 20;
             top: 100%;
-            left: 0;
-            right: 0;
+            left: 0; right: 0;
             pointer-events: auto; 
         }
         .suggestion-item {
             padding: 0.5rem 0.75rem;
             cursor: pointer;
-            font-size: 0.875rem;
-            color: #4a5568;
+            font-size: 0.8125rem;
+            color: #cbd5e1;
+            transition: background 0.1s ease;
         }
-        .suggestion-item:hover {
-            background-color: #f7fafc;
+        .suggestion-item:hover { 
+            background-color: #1e293b; 
+            color: #f8fafc;
         }
         .suggestion-item.composition-suggestion {
-            font-weight: bold;
-            color: #1a202c;
-            background-color: #e2e8f0;
+            font-weight: 600;
+            color: #38bdf8;
+            background-color: #172554;
         }
-        .suggestion-item.composition-suggestion:hover {
-            background-color: #cbd5e0;
+        .suggestion-item.composition-suggestion:hover { 
+            background-color: #1e3a8a; 
         }
+
         #display-box {
             border: none;
             box-shadow: none;
-            border-radius: 10px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
         }
-        #search-input, #shuffle-button, #share-button {
-            font-size: 8pt;
-        }
-        #share-button {
-            background-color: #97b9cc;
-        }
-        #share-button:hover {
-            background-color: #7a9cb2;
-        }
-        #share-button:active {
-            background-color: #61879c;
-        }
+        
         #trait-selection-panel {
-            border-radius: 10px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border: 1px solid #1e293b;
         }
-        .modal {
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .share-option-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: white;
-            transition: background-color 0.2s;
-        }
-        .share-option-button svg {
-            margin-right: 8px;
-        }
-        .share-option-button.download { background-color: #4CAF50; }
-        .share-option-button.download:hover { background-color: #45a049; }
-        .share-option-button.x { background-color: #000000; }
-        .share-option-button.x:hover { background-color: #333333; }
-        .share-option-button.linkedin { background-color: #0077B5; }
-        .share-option-button.linkedin:hover { background-color: #005582; }
-        .share-option-button.copy { background-color: #6c757d; }
-        .share-option-button.copy:hover { background-color: #5a6268; }
 
         @media (min-width: 1024px) {
             #display-box {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
             }
             #trait-selection-panel {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+                border-top-right-radius: 12px;
+                border-bottom-right-radius: 12px;
+                border-left: none;
             }
         }
+
+        .modal {
+            position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background-color: #0f172a; 
+            padding: 24px; 
+            border-radius: 12px;
+            border: 1px solid #334155;
+            width: 90%; max-width: 380px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+        .close-button {
+            position: absolute; top: 12px; right: 16px;
+            font-size: 20px; font-weight: bold; cursor: pointer;
+            color: #94a3b8;
+        }
+        .close-button:hover { color: #f8fafc; }
+        .share-option-button {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; padding: 8px 12px; margin-bottom: 8px; border-radius: 6px;
+            font-size: 0.875rem; font-weight: 600; color: white; transition: opacity 0.15s;
+        }
+        .share-option-button:hover { opacity: 0.9; }
+        .share-option-button.download { background-color: #10b981; }
+        .share-option-button.x { background-color: #000000; border: 1px solid #334155; }
+        .share-option-button.linkedin { background-color: #0284c7; }
+        .share-option-button.copy { background-color: #475569; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-gray-800 bg-gray-200">
+<body class="min-h-screen flex flex-col justify-between bg-black">
 
-    <main class="flex-grow flex flex-col items-center p-4 sm:p-8 w-full mx-auto">
+    <header class="w-full border-b border-slate-900 bg-black backdrop-blur sticky top-0 z-30 px-4 py-3">
+        <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+                <h1 class="text-base sm:text-lg font-bold tracking-tight text-white uppercase">The controverse</h1>
+            </div>
+            <span class="text-[10px] tracking-wider uppercase font-semibold text-slate-400 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-full">Portrait Builder</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col justify-center items-center p-4 sm:p-6 w-full mx-auto">
         <div class="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row lg:items-stretch lg:justify-center lg:gap-0"> 
-            <!-- Left Panel: Display Box -->
+            
             <div id="left-content-panel" class="flex flex-col items-start w-full max-w-[500px] mx-auto flex-shrink-0 mb-0 lg:h-full lg:flex-1 lg:max-w-none">
-                <div id="display-box" class="relative w-full aspect-square overflow-hidden bg-gray-200 mb-0">
-                    <img id="layer-lowerFace" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
-                    <img id="layer-upperFace" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
-                    <img id="layer-shade" class="absolute inset-0 w-full h-full object-contain" src="https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/shade/Shade.png" alt="Shade" crossorigin="anonymous">
-                    <img id="layer-hair" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
-                    <img id="layer-nose" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
-                    <img id="layer-outfit" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
-                    <img id="layer-props" class="absolute inset-0 w-full h-full object-contain" alt="" crossorigin="anonymous">
+                <div id="display-box" class="relative w-full aspect-square overflow-hidden bg-gray-100 mb-0">
+                    <img id="layer-lowerFace" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-upperFace" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-shade" class="absolute inset-0 w-full h-full object-contain pointer-events-none" src="https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/shade/Shade.png" alt="Shade" crossorigin="anonymous">
+                    <img id="layer-hair" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-nose" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-outfit" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
+                    <img id="layer-props" class="absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" crossorigin="anonymous">
                 </div>
             </div>
 
-            <!-- Right Panel: Trait Selection -->
-            <div id="trait-selection-panel" class="w-full max-w-[500px] mx-auto bg-white p-6 rounded-lg flex flex-col lg:h-full lg:flex-1 lg:min-w-[320px] lg:max-w-none">
-                <div class="w-full mb-4"> 
+            <div id="trait-selection-panel" class="w-full max-w-[500px] mx-auto bg-slate-950 p-5 flex flex-col lg:h-full lg:flex-1 lg:min-w-[440px] lg:max-w-none">
+                
+                <div class="w-full mb-3 relative"> 
                     <div class="relative w-full flex items-center">
-                        <input type="text" id="search-input" placeholder="search name or trait" class="w-full pl-4 pr-10 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
-                        <svg class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="search-input" placeholder="Search name or trait..." class="w-full pl-3 pr-9 py-1.5 rounded-lg bg-black border border-slate-800 text-slate-200 placeholder-slate-500 text-xs focus:outline-none focus:border-sky-500 transition-colors">
+                        <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         <div id="search-suggestions" class="hidden"></div>
                     </div>
                 </div>
 
-                <div id="controls-container" class="flex flex-col flex-grow overflow-y-auto"></div>
+                <div id="controls-container" class="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-2.5 flex-grow overflow-y-auto pr-1 content-start"></div>
 
-                <div class="w-full mt-0 flex items-center justify-center flex-shrink-0">
-                    <button id="shuffle-button" class="w-[95%] mx-auto flex items-center justify-center text-gray-800 font-medium px-4 py-2 rounded-md border-2 border-[#c7e2a1] bg-[#c7e2a1] hover:bg-lime-800 active:bg-lime-900 transition-colors duration-200">
-                        shuffle
-                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                        </svg>
+                <div class="w-full pt-3 mt-2 border-t border-slate-900 flex items-center space-x-2 flex-shrink-0">
+                    <button id="shuffle-button" class="flex-1 flex items-center justify-center text-slate-200 font-semibold text-xs px-3 py-1.5 rounded-md border border-slate-800 bg-slate-900 hover:bg-slate-800 active:bg-black transition-colors">
+                        <span>Shuffle</span>
+                        <svg class="ml-1.5 w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                    
+                    <button id="share-button" class="flex-1 flex items-center justify-center text-white font-semibold text-xs px-3 py-1.5 rounded-md bg-sky-600 hover:bg-sky-500 active:bg-sky-700 transition-colors">
+                        <span>Share</span>
+                        <svg class="ml-1.5 w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.885 12.938 9 12.482 9 12c0-.482-.115-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>
                     </button>
                 </div>
-                <div class="w-full mt-4 flex items-center justify-center flex-shrink-0">
-                    <button id="share-button" class="w-[95%] mx-auto flex items-center justify-center text-white font-medium px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200">
-                        Share Composition
-                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.885 12.938 9 12.482 9 12c0-.482-.115-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                        </svg>
-                    </button>
-                </div>
+
             </div>
         </div>
     </main>
 
-    <!-- Modal Element -->
     <div id="share-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-button" id="close-share-modal">&times;</span>
-            <h2 class="text-xl font-bold mb-4">Share Your Avatar</h2>
-            <p class="mb-4 text-sm text-gray-600">Download your composition or share on social media!</p>
-            
-            <div class="flex flex-col space-y-3 mb-4">
-                <a id="download-image-btn" download="my-controverse-avatar.png" class="share-option-button download">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download Image
-                </a>
-                <button id="share-x-btn" class="share-option-button x">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.9 3.2c1.7-1 3.4-1.6 5.1-1.9v2.5c-1.3.1-2.6.5-3.9 1.1-1.3.6-2.5 1.5-3.6 2.6-1.1 1.1-1.9 2.4-2.5 3.7-.6 1.3-1 2.6-1.1 4H2.4c.1-1.7.5-3.4 1.2-5 1-2 2.7-3.6 4.6-4.9C9 4.3 11 3.2 13.2 2.5l-.2-.5c-2.3.8-4.5 2-6.5 3.5-2.1 1.5-3.7 3.4-4.8 5.7L0 12.3v.5c0 1.7.4 3.4 1.2 5 1 2 2.7 3.6 4.6 4.9 1.9 1.3 4 2.1 6.2 2.4l.2.5z"/></svg>
-                    Share on X
-                </button>
-                <button id="share-linkedin-btn" class="share-option-button linkedin">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.444-2.136 2.939v5.667H9.59V9.182h3.414v1.564h.046c.477-.9 1.637-1.85 3.37-1.85 3.616 0 4.287 2.37 4.287 5.454v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.139.92-2.063 2.063-2.063 1.14 0 2.064.924 2.064 2.063 0 1.139-.923 2.065-2.064 2.065zM7.062 20.452H3.414V9.182h3.648v11.27zM12.04 0c-6.617 0-12 5.383-12 12s5.383 12 12 12 12-5.383 12-12-5.383-12-12-12z"/></svg>
-                    Share on LinkedIn
-                </button>
-                <button id="copy-hashtags-btn" class="share-option-button copy">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                    Copy Hashtags & Text
-                </button>
+            <h2 class="text-base font-bold mb-1 text-slate-100">Share Your Artwork</h2>
+            <p class="mb-4 text-xs text-slate-400">Export your custom portrait or post to socials.</p>
+            <div class="flex flex-col space-y-2">
+                <a id="download-image-btn" download="the-controverse-portrait.png" class="share-option-button download">Download Image</a>
+                <button id="share-x-btn" class="share-option-button x">Share on X</button>
+                <button id="share-linkedin-btn" class="share-option-button linkedin">Share on LinkedIn</button>
+                <button id="copy-hashtags-btn" class="share-option-button copy">Copy Hashtags & Text</button>
             </div>
-            <p class="text-xs text-gray-500">For Instagram / TikTok, please download the image and paste the copied text manually.</p>
         </div>
     </div>
 
     <script>
         (function() {
-            let controlsContainer;
-            let displayBox;
-            let traitSelectionPanel;
-            let searchInput;
-            let searchSuggestionsContainer;
-            let shuffleButton;
-            let leftContentPanel;
-            let shareButton; 
-            let shareModal; 
-            let closeShareModalButton; 
-            let downloadImageButton; 
-            let shareXButton; 
-            let shareLinkedinButton; 
-            let copyHashtagsButton; 
-            
+            let controlsContainer, displayBox, traitSelectionPanel, searchInput, searchSuggestionsContainer, shuffleButton, leftContentPanel, shareButton, shareModal, closeShareModalButton, downloadImageButton, shareXButton, shareLinkedinButton, copyHashtagsButton;
             let allCharacterCompositions;
 
             const traitData = {
@@ -263,7 +248,7 @@
                     { name: 'Kalashnikov', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Kalashnikov.png' },
                     { name: 'Podium', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Podium.png' },
                     { name: 'Red Halo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/Red%20Halo.png' },
-                    { name: 'White Halo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/White%20Halo.png' },
+                    { name: 'White Halo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/props/White%20Halo.png' }
                 ],
                 outfit: [
                     { name: 'None', imageUrl: '' },
@@ -277,7 +262,7 @@
                     { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Biggie.png?raw=true' },
                     { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Bob%20Marley.png?raw=true' },
                     { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Che%20Guevara.png?raw=true' },
-                    { name: 'Christiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Ronaldo.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Ronaldo.png?raw=true' },
                     { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Dalai%20Lama.png?raw=true' },
                     { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Donald%20Trump.png?raw=true' },
                     { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Edward%20Snowden.png?raw=true' },
@@ -285,7 +270,7 @@
                     { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Emmanuel%20Macron.png?raw=true' },
                     { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Fidel%20Castro.png?raw=true' },
                     { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Frida%20Kahlo.png?raw=true' },
-                    { name: 'Greta Thurnberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Greta%20Thurnberg.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Greta%20Thurnberg.png?raw=true' },
                     { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Hassan%20Nasrallah.png?raw=true' },
                     { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Henry%20Kissinger.png?raw=true' },
                     { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Jeremy%20Corbyn-01.png?raw=true' },
@@ -295,6 +280,7 @@
                     { name: 'Julian Assange Jacket', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Julian%20Assange%20Jacket.png?raw=true' },
                     { name: 'Kim Jong Un', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Jong%20Un.png?raw=true' },
                     { name: 'Kim Kardashian', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Kardashian.png?raw=true' },
+                    { name: 'Kim Kardashian Hoodie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Kim%20Kardashian%20-%20Hoodie.png?raw=true' },
                     { name: 'Lady Diana', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Lady%20D.png?raw=true' },
                     { name: 'Lionel Messi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Lionel%20Messi.png?raw=true' },
                     { name: 'Mahatma Gandhi', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mahatma%20Gandhi.png?raw=true' },
@@ -302,7 +288,7 @@
                     { name: 'Mark Zuckerberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mark%20Zuckerberg.png?raw=true' },
                     { name: 'Martin Luther King', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Martin%20Luther%20King.png?raw=true' },
                     { name: 'Michael Jackson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jackson%20-%20Red.png?raw=true' },
-                    { name: 'Michael Jackson black', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jackson%20-%20Black.png?raw=true' },
+                    { name: 'Michael Jackson Black', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jackson%20-%20Black.png?raw=true' },
                     { name: 'Michael Jordan', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Michael%20Jordan.png?raw=true' },
                     { name: 'Mike Tyson', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mike%20Tyson.png?raw=true' },
                     { name: 'Mohammed bin Rashid Al Maktoum', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/outfit/Mohammed%20bin%20Rashid%20Al%20Maktoum.png?raw=true' },
@@ -338,7 +324,7 @@
                     { name: 'Biggie', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Biggie.png?raw=true' },
                     { name: 'Bob Marley', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Bob-Marley.png?raw=true' },
                     { name: 'Che Guevara', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Che-Guevara.png?raw=true' },
-                    { name: 'Christiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Ronaldo.png?raw=true' },
+                    { name: 'Cristiano Ronaldo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Ronaldo.png?raw=true' },
                     { name: 'Dalai Lama', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Dalai-Lama.png?raw=true' },
                     { name: 'Donald Trump', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Donald-Trump.png?raw=true' },
                     { name: 'Edward Snowden', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Edward-Snowden.png?raw=true' },
@@ -346,7 +332,7 @@
                     { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Emmanuel-Macron.png?raw=true' },
                     { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Fidel-Castro.png?raw=true' },
                     { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Frida.png?raw=true' },
-                    { name: 'Greta Thurnberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Greta-Thunberg.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Greta-Thunberg.png?raw=true' },
                     { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Hassan-Nasrallah.png?raw=true' },
                     { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Henry-Kissinger.png?raw=true' },
                     { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/nose/Jeremy-Corbyn.png?raw=true' },
@@ -469,7 +455,7 @@
                     { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Emmanuel-Macron.png?raw=true' },
                     { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Fidel-Castro.png?raw=true' },
                     { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Frida.png?raw=true' },
-                    { name: 'Greta Thurnberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Greta-Thunberg.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Greta-Thunberg.png?raw=true' },
                     { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Hassan-Nasrallah.png?raw=true' },
                     { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Henry-Kissinger.png?raw=true' },
                     { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/upperface/Jeremy-Corbyn.png?raw=true' },
@@ -529,7 +515,7 @@
                     { name: 'Emmanuel Macron', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Emmanuel%20Macron.png?raw=true' },
                     { name: 'Fidel Castro', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Fidel%20Castro.png?raw=true' },
                     { name: 'Frida Kahlo', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Frida%20Kahlo.png?raw=true' },
-                    { name: 'Greta Thurnberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Greta%20Thurnberg.png?raw=true' },
+                    { name: 'Greta Thunberg', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Greta%20Thurnberg.png?raw=true' },
                     { name: 'Hassan Nasrallah', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Hassan%20Nasrallah.png?raw=true' },
                     { name: 'Henry Kissinger', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Henry%20Kissinger.png?raw=true' },
                     { name: 'Jeremy Corbyn', imageUrl: 'https://raw.githubusercontent.com/TonyKhoueiry/Controverse-Assets/main/lowerface/Jeremy%20Corbyn.png?raw=true' },
@@ -574,47 +560,41 @@
             
             const categoryOrder = ['hair', 'upperFace', 'nose', 'lowerFace', 'outfit', 'props', 'background'];
             
-            // Declare functions here (hoisted) for proper scope
             function createDropdowns() {
-                // Clear existing dropdowns first to prevent duplicates on re-init
                 controlsContainer.innerHTML = ''; 
 
                 categoryOrder.forEach(categoryKey => {
-                    let traits = [...traitData[categoryKey]]; // Create a copy to sort
+                    let traits = [...traitData[categoryKey]];
                     const readableName = categoryKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
 
-                    // Separate 'None' option if it exists
                     const noneTrait = traits.find(trait => trait.name === 'None');
                     let sortedTraits = traits.filter(trait => trait.name !== 'None');
 
-                    // Sort the remaining traits alphabetically
                     sortedTraits.sort((a, b) => a.name.localeCompare(b.name));
 
-                    // Prepend 'None' if it existed
                     if (noneTrait) {
                         sortedTraits.unshift(noneTrait);
                     }
 
                     const container = document.createElement('div');
-                    container.className = 'mb-4'; // Increased margin-bottom to mb-4
+                    container.className = 'flex flex-col';
 
                     const label = document.createElement('label');
                     label.htmlFor = `select-${categoryKey}`;
-                    label.className = 'block text-gray-700 text-sm font-bold mb-0';
+                    label.className = 'block text-slate-400 text-[11px] font-semibold tracking-wide uppercase mb-1';
                     label.textContent = readableName;
 
                     const select = document.createElement('select');
                     select.id = `select-${categoryKey}`;
-                    select.className = 'block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 rounded-md leading-tight focus:outline-none focus:ring-0 transition-shadow'; /* Removed focus:ring-2 focus:ring-blue-500 */
+                    select.className = 'block appearance-none w-full bg-black border border-slate-800 text-slate-200 py-1.5 px-2.5 rounded-md leading-tight focus:outline-none focus:border-sky-500 text-xs';
                     
-                    sortedTraits.forEach(trait => { // Use sortedTraits here
+                    sortedTraits.forEach(trait => {
                         const option = document.createElement('option');
                         option.textContent = trait.name;
                         option.value = categoryKey === 'background' ? trait.value : trait.imageUrl; 
                         select.appendChild(option);
                     });
                     
-                    // Set default for 'props' to 'None' (empty string)
                     if (categoryKey === 'props') {
                         select.value = ''; 
                     }
@@ -632,24 +612,19 @@
                     const select = document.getElementById(`select-${categoryKey}`);
                     const selectedValue = select.value;
 
-                    // Handle background separately as it's a class on displayBox
                     if (categoryKey === 'background') {
                         const bgClasses = traitData.background.map(t => t.value);
                         displayBox.classList.remove(...bgClasses);
-                        traitSelectionPanel.classList.remove(...bgClasses);
 
                         displayBox.classList.add(selectedValue);
-                        traitSelectionPanel.classList.add(selectedValue);
                     } else {
                         const imgLayer = document.getElementById(`layer-${categoryKey}`);
                         if(imgLayer) {
                             if (selectedValue === '') {
-                                // If 'None' is selected, ensure no src is set and hide the element
-                                imgLayer.removeAttribute('src'); // Safest way to ensure no loading attempt
+                                imgLayer.removeAttribute('src');
                                 imgLayer.style.display = 'none';
                                 imgLayer.alt = '';
                             } else {
-                                // If a valid trait is selected, set src and display the element
                                 imgLayer.src = selectedValue;
                                 imgLayer.style.display = 'block';
                                 const selectedTraitObj = traitData[categoryKey].find(trait => trait.imageUrl === selectedValue);
@@ -662,20 +637,17 @@
             }
 
             function shuffle() {
-                console.log('Shuffling composition...');
                 categoryOrder.forEach(categoryKey => {
                     const select = document.getElementById(`select-${categoryKey}`);
                     const traits = traitData[categoryKey];
                     let randomTrait;
 
-                    // Handle background separately as it's a class on displayBox and can always be random
                     if (categoryKey === 'background') {
                         const randomIndex = Math.floor(Math.random() * traits.length);
                         randomTrait = traits[randomIndex];
-                    } else if (categoryKey === 'props') { // Keep props as 'None' on shuffle
+                    } else if (categoryKey === 'props') {
                         randomTrait = traits.find(t => t.name === 'None');
                         if (!randomTrait) {
-                            console.warn("No 'None' option found for props category. Defaulting to first trait.");
                             randomTrait = traits[0]; 
                         }
                     } 
@@ -690,32 +662,23 @@
                     }
                     
                     select.value = (categoryKey === 'background' ? randomTrait.value : randomTrait.imageUrl);
-                    console.log(`Shuffled ${categoryKey} to:`, randomTrait.name);
                 });
                 updateDisplay();
-                console.log('Shuffle complete.');
             }
 
             function adjustPanelHeight() {
                 if (leftContentPanel && traitSelectionPanel) {
                     if (window.innerWidth >= 1024) {
-                        const leftContentHeight = displayBox.offsetHeight; // Use displayBox height for alignment
+                        const leftContentHeight = displayBox.offsetHeight;
                         traitSelectionPanel.style.height = `${leftContentHeight}px`;
-                        controlsContainer.classList.add('flex', 'flex-col', 'justify-start');
-                        controlsContainer.style.height = '100%'; // Allow controls container to fill available height
-                        controlsContainer.style.overflowY = 'auto'; // Make controls container scrollable
-                        traitSelectionPanel.style.overflowY = 'hidden'; // Hide overflow for the panel
+                        traitSelectionPanel.style.overflowY = 'hidden';
                     } else {
                         traitSelectionPanel.style.height = '';
                         traitSelectionPanel.style.overflowY = 'visible';
-                        controlsContainer.classList.remove('flex', 'flex-col', 'justify-start');
-                        controlsContainer.style.height = '';
-                        controlsContainer.style.overflowY = 'visible';
                     }
                 }
             }
 
-            // Function to generate hashtags from selected traits (no changes here)
             function getSelectedTraitsAsHashtags() {
                 let hashtags = ["#thecontroverse"];
                 categoryOrder.forEach(categoryKey => {
@@ -733,80 +696,63 @@
                 return hashtags.join(' ');
             }
 
-            // Function to copy text to clipboard (no changes here)
             async function copyToClipboard(text) {
                 try {
                     await navigator.clipboard.writeText(text);
-                    console.log('Text copied to clipboard using Clipboard API:', text);
                 } catch (err) {
-                    console.error('Failed to copy text using Clipboard API:', err);
                     const textarea = document.createElement('textarea');
                     textarea.value = text;
                     document.body.appendChild(textarea);
                     textarea.select();
                     try {
                         document.execCommand('copy');
-                        console.log('Text copied to clipboard using execCommand:', text);
                     } catch (err2) {
-                        console.error('Failed to copy text using execCommand:', err2);
+                        console.error('Failed to copy text:', err2);
                     } finally {
                         document.body.removeChild(textarea);
                     }
                 }
             }
 
-            // Function to handle sharing the composition
             async function shareComposition() {
-                console.log('Attempting to share composition...');
-                shareModal.style.display = 'flex'; // Show the modal
+                shareModal.style.display = 'flex';
 
                 try {
-                    // Use scale to capture higher resolution if needed, then draw to a smaller canvas for display
                     const canvas = await html2canvas(displayBox, {
-                        allowTaint: true, // Allow images from other origins to be drawn
-                        useCORS: true,   // Attempt to load images using CORS (they must support it)
-                        scale: 2, // Capture at 2x resolution for better quality
-                        backgroundColor: null // Transparent background if displayBox itself has none
+                        allowTaint: true,
+                        useCORS: true,
+                        scale: 2,
+                        backgroundColor: null
                     });
 
-                    // Ensure the downloaded image is of good quality.
-                    // The 'type' and 'quality' parameters are for toDataURL.
-                    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG for smaller file size, adjust quality
-
+                    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
                     downloadImageButton.href = imageDataUrl;
 
-                    const shareText = "Check out my new avatar composition! ";
+                    const shareText = "Check out my portrait creation on The controverse! ";
                     const hashtags = getSelectedTraitsAsHashtags();
                     const fullShareText = `${shareText} ${hashtags}`;
-                    console.log('Generated share text:', fullShareText);
 
-                    // X (Twitter) Share
                     shareXButton.onclick = () => {
                         const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullShareText)}`;
                         window.open(xUrl, '_blank');
                     };
 
-                    // LinkedIn Share
                     shareLinkedinButton.onclick = () => {
-                        const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(fullShareText)}&source=AvatarCustomizer`;
+                        const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(fullShareText)}&source=TheControverse`;
                         window.open(linkedinUrl, '_blank');
                     };
 
-                    // Copy Hashtags & Text to Clipboard
                     copyHashtagsButton.onclick = () => {
                         copyToClipboard(fullShareText);
                     };
 
-                    console.log('Share options prepared.');
-
                 } catch (error) {
                     console.error('Error generating image for sharing:', error);
-                    alert('Could not prepare image for sharing. Please try again or check console for errors.');
-                    shareModal.style.display = 'none'; // Hide modal if error occurs
+                    alert('Could not prepare image for sharing. Please try again.');
+                    shareModal.style.display = 'none';
                 }
             }
 
-            // filterAndDisplaySuggestions function
             function filterAndDisplaySuggestions() {
                 const query = searchInput.value.toLowerCase().trim();
                 searchSuggestionsContainer.innerHTML = '';
@@ -819,25 +765,22 @@
                 let suggestions = [];
                 let hasCompositionMatch = false;
 
-                // Prioritize exact or strong matches for compositions
                 for (const lowerName in allCharacterCompositions) {
                     if (lowerName.includes(query)) {
                         const charData = allCharacterCompositions[lowerName];
                         suggestions.push({
                             type: 'composition',
-                            displayText: `${charData.name} (Full Composition)`,
+                            displayText: `${charData.name} (Full Character)`,
                             traits: charData.traits,
-                            relevance: lowerName.startsWith(query) ? 2 : 1 // Higher relevance for startsWith
+                            relevance: lowerName.startsWith(query) ? 2 : 1
                         });
                         hasCompositionMatch = true;
                     }
                 }
 
-                // Add individual trait matches, but deprioritize if a composition match is strong
-                if (!hasCompositionMatch || query.length >= 3) { // Show traits if no composition match or if query is long enough
+                if (!hasCompositionMatch || query.length >= 3) {
                     for (const categoryKey in traitData) {
                         const readableCategoryName = categoryKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                        // Ensure traitData[categoryKey] is an array before attempting to iterate
                         if (Array.isArray(traitData[categoryKey])) {
                             traitData[categoryKey].forEach(trait => {
                                 if (trait.name !== 'None' && trait.name.toLowerCase().includes(query)) {
@@ -846,7 +789,7 @@
                                         displayText: `${trait.name} (${readableCategoryName})`,
                                         category: categoryKey,
                                         value: categoryKey === 'background' ? trait.value : trait.imageUrl,
-                                        relevance: trait.name.toLowerCase().startsWith(query) ? 2 : 1 // Higher relevance for startsWith
+                                        relevance: trait.name.toLowerCase().startsWith(query) ? 2 : 1
                                     });
                                 }
                             });
@@ -854,14 +797,12 @@
                     }
                 }
 
-                // Sort suggestions: compositions first, then by relevance, then alphabetically
                 suggestions.sort((a, b) => {
                     if (a.type === 'composition' && b.type !== 'composition') return -1;
                     if (a.type !== 'composition' && b.type === 'composition') return 1;
                     if (b.relevance !== a.relevance) return b.relevance - a.relevance;
                     return a.displayText.localeCompare(b.displayText);
                 });
-
 
                 if (suggestions.length > 0) {
                     suggestions.forEach(match => {
@@ -874,7 +815,7 @@
                         suggestionItem.textContent = match.displayText;
                         suggestionItem.dataset.type = match.type;
                         suggestionItem.dataset.category = match.category || '';
-                        suggestionItem.dataset.value = match.value || ''; // Ensure value is always set
+                        suggestionItem.dataset.value = match.value || '';
 
                         if (match.type === 'composition') {
                             suggestionItem.compositionTraits = match.traits; 
@@ -896,17 +837,15 @@
                                         targetSelect.value = charTraitValue;
                                     }
                                 }
-                                // Ensure background is handled if it's part of a composition or defaults
                                 const backgroundSelect = document.getElementById('select-background');
                                 if (backgroundSelect && traitsToApply.background) {
                                     backgroundSelect.value = traitsToApply.background;
                                 } else if (backgroundSelect) {
-                                    // If composition doesn't specify background, default to a known one
                                     const defaultBg = traitData.background.find(t => t.name === 'Warm Granite')?.value || traitData.background[0].value;
                                     backgroundSelect.value = defaultBg;
                                 }
 
-                            } else { // It's an individual trait
+                            } else {
                                 const selectedCategory = this.dataset.category;
                                 const selectedValue = this.dataset.value;
                                 const targetSelect = document.getElementById(`select-${selectedCategory}`);
@@ -926,11 +865,7 @@
                 }
             }
 
-            // init function
             function init() {
-                console.log('Initializing app - Version: 2024-06-20-v63'); // Updated version stamp
-
-                // Assign references here to ensure DOM is loaded
                 controlsContainer = document.getElementById('controls-container');
                 displayBox = document.getElementById('display-box');
                 traitSelectionPanel = document.getElementById('trait-selection-panel');
@@ -946,61 +881,39 @@
                 shareLinkedinButton = document.getElementById('share-linkedin-btn'); 
                 copyHashtagsButton = document.getElementById('copy-hashtags-btn'); 
                 
-                // Initialize allCharacterCompositions here, ensuring it's defined within the IIFE scope
                 allCharacterCompositions = {};
                 for (const categoryKey in traitData) {
-                    // Check if traitData[categoryKey] is an array before iterating
-                    if (Array.isArray(traitData[categoryKey])) { // Removed the `&& categoryKey !== 'background'` condition
+                    if (Array.isArray(traitData[categoryKey])) { 
                         traitData[categoryKey].forEach(trait => {
                             if (trait.name !== 'None') {
                                 const lowerName = trait.name.toLowerCase();
                                 if (!allCharacterCompositions[lowerName]) {
                                     allCharacterCompositions[lowerName] = { name: trait.name, traits: {} };
                                 }
-                                allCharacterCompositions[lowerName].traits[categoryKey] = (categoryKey === 'background' ? trait.value : trait.imageUrl); // Store correct value type
+                                allCharacterCompositions[lowerName].traits[categoryKey] = (categoryKey === 'background' ? trait.value : trait.imageUrl);
                             }
                         });
                     }
                 }
 
-                // Add background for existing compositions (e.g., if "Andy Warhol" has a default background)
-                // This part needs to be manually defined if characters have specific backgrounds
-                // For now, it will use the current background or default to 'Warm Granite' if not specified in search.
-                // Example: allCharacterCompositions['andy warhol'].traits.background = 'bg-red-100';
-
-                console.log('allCharacterCompositions initialized:', Object.keys(allCharacterCompositions).length, 'characters found.');
-
-                // Attach event listeners
                 if (shuffleButton) {
                     shuffleButton.addEventListener('click', shuffle);
-                    console.log('Shuffle button event listener added.');
-                } else {
-                    console.error('Shuffle button not found at init time.');
                 }
                 
                 if (searchInput) {
                     searchInput.addEventListener('input', filterAndDisplaySuggestions);
                     searchInput.addEventListener('focus', filterAndDisplaySuggestions);
                     searchInput.addEventListener('blur', function() {
-                        // Delay hiding to allow click on suggestions
                         setTimeout(() => {
                             searchSuggestionsContainer.classList.add('hidden');
                         }, 200); 
                     });
-                    console.log('Search input event listener added.');
-                } else {
-                    console.error('Search input not found.');
                 }
 
-                // Re-added share button event listener
                 if (shareButton) {
                     shareButton.addEventListener('click', shareComposition);
-                    console.log('Share button event listener added.');
-                } else {
-                    console.error('Share button not found at init time.');
                 }
 
-                // Re-added close share modal event listener
                 if (closeShareModalButton) {
                     closeShareModalButton.addEventListener('click', () => {
                         shareModal.style.display = 'none';
@@ -1008,17 +921,13 @@
                 }
 
                 createDropdowns(); 
-                shuffle(); // Initial random composition
+                shuffle(); 
                 adjustPanelHeight(); 
                 window.addEventListener('resize', adjustPanelHeight);
-
-                console.log('App initialization complete.');
             }
 
-            // Call init directly when the script is parsed, as it's within an IIFE.
             init(); 
-        })(); // IIFE ends here
+        })();
     </script>
 </body>
 </html>
-```
