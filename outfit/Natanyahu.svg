@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #479fdd;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        opacity: .23;
+      }
+
+      .cls-4 {
+        opacity: .2;
+      }
+
+      .cls-5 {
+        fill: #1c253b;
+      }
+    </style>
+  </defs>
+  <g id="Benjamin_Natanyahu" data-name="Benjamin Natanyahu">
+    <polygon class="cls-2" points="189 369 162 369 162 504 342 504 342 369 315 369 252 376.94 189 369"/>
+    <polygon class="cls-1" points="252 378 234 387 243 405 225 495 247.32 504 274.35 504 252 405 261 387 252 378"/>
+    <polygon class="cls-3" points="243 504 243 405 252 378 234 387 243 405 223.68 504 243 504"/>
+    <polygon class="cls-5" points="189 369 162 369 162 504 342 504 342 369 315 369 253.23 495 189 369"/>
+    <polygon class="cls-3" points="252 378 234 387 216 396 279 405 252 378"/>
+    <rect class="cls-4" x="162" y="369" width="18" height="135"/>
+  </g>
+</svg>
