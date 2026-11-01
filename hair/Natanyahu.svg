@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Hair" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: .2;
+      }
+
+      .cls-2 {
+        fill: #d4d2ed;
+      }
+    </style>
+  </defs>
+  <g id="Benjamin_Natanyahu" data-name="Benjamin Natanyahu">
+    <g>
+      <polygon class="cls-2" points="351 216 342 216 342 108 360 126 351 216"/>
+      <polygon class="cls-2" points="189 99 162 108 144 126 153 207 162 207 162 108 342 108 306 99 189 99"/>
+      <polygon class="cls-1" points="342 108 189 99 171 108 342 108"/>
+    </g>
+  </g>
+</svg>
