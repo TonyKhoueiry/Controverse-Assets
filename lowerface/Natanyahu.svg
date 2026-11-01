@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Lower_Face" data-name="Lower Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d2ab9e;
+      }
+
+      .cls-2 {
+        fill: #b7827f;
+        stroke: #62483e;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 1px;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-5 {
+        opacity: .23;
+      }
+
+      .cls-6 {
+        opacity: .2;
+      }
+
+      .cls-7 {
+        opacity: .11;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #221f20;
+      }
+
+      .cls-4 {
+        stroke: #a77165;
+      }
+    </style>
+  </defs>
+  <g id="Benjamin_Natanyahu" data-name="Benjamin Natanyahu">
+    <g id="Benjamin_Natanyahu-2" data-name="Benjamin Natanyahu">
+      <polyline class="cls-1" points="162 261 162 342 189 342 189 503.82 315 503.82 315 342 342 342 342 261 252 243 162 261"/>
+      <g>
+        <g>
+          <polygon class="cls-5" points="243 324 270 324 315 333 279 315 288 306 261 306 225 306 234 315 198 333 243 324"/>
+          <polyline class="cls-4" points="198 297 243 288 270 297"/>
+          <line class="cls-4" x1="261" y1="297" x2="216" y2="297"/>
+        </g>
+        <polygon class="cls-6" points="315 315 324 342 342 342 315 315"/>
+        <polygon class="cls-6" points="180 342 189 324 162 342 180 342"/>
+        <polygon class="cls-2" points="288 306 225 306 207 297 297 297 288 306"/>
+        <polygon class="cls-6" points="297 279 315 315 306 288 297 279"/>
+        <polygon class="cls-6" points="198 288 189 324 207 279 198 288"/>
+        <polygon class="cls-7" points="243 279 252 288 261 279 252 261 252 261 243 279"/>
+        <polyline class="cls-3" points="198 297 225 297 279 297 306 297"/>
+      </g>
+    </g>
+    <polygon class="cls-6" points="252 351 315 342 315 342 315 342 288 396 279 369 270 360 252 360 225 369 189 432 189 342 252 351"/>
+  </g>
+</svg>
