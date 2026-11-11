@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d3a991;
+      }
+
+      .cls-2 {
+        fill: #592a1b;
+      }
+
+      .cls-3 {
+        fill: #d43732;
+        opacity: .1;
+      }
+
+      .cls-4 {
+        stroke-width: 1px;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-8, .cls-9 {
+        fill: none;
+      }
+
+      .cls-4, .cls-5, .cls-8, .cls-9 {
+        stroke: #000;
+      }
+
+      .cls-5 {
+        stroke-width: 1.42px;
+      }
+
+      .cls-10 {
+        fill: #e9ae3d;
+      }
+
+      .cls-6 {
+        stroke: #c27674;
+      }
+
+      .cls-11 {
+        fill: #cf968f;
+      }
+
+      .cls-7 {
+        fill: gray;
+        stroke: gray;
+      }
+
+      .cls-12 {
+        opacity: .4;
+      }
+
+      .cls-13 {
+        fill: #5b391b;
+        opacity: .27;
+      }
+
+      .cls-9 {
+        stroke-width: 5.67px;
+      }
+
+      .cls-14 {
+        fill: #c88c76;
+      }
+
+      .cls-15 {
+        fill: #c27674;
+      }
+    </style>
+  </defs>
+  <g id="Top_Face" data-name="Top Face">
+    <g id="Kim_Jong_Un" data-name="Kim Jong Un">
+      <g>
+        <polygon class="cls-1" points="342 261 351 189 342 108 162 108 162 207 126 207 126 261 342 261"/>
+        <rect class="cls-11" x="297" y="243" width="27" height="18"/>
+        <rect class="cls-11" x="180" y="243" width="27" height="18"/>
+        <g>
+          <polygon class="cls-5" points="324 225 252 225 252 171 270 171 333 171 324 225"/>
+          <polygon class="cls-5" points="252 225 180 225 171 171 234 171 252 171 252 225"/>
+          <polyline class="cls-9" points="333 180 333 171 270 171 252 171 234 171 171 171 171 180"/>
+        </g>
+        <rect class="cls-12" x="279" y="153" width="27" height="9"/>
+        <rect class="cls-12" x="198" y="153" width="27" height="9"/>
+        <rect x="243" y="198" width="18" height="9"/>
+      </g>
+      <line class="cls-8" x1="234" y1="198.64" x2="270" y2="198.64"/>
+    </g>
+    <g id="Dalai_Lama" data-name="Dalai Lama">
+      <polygon class="cls-14" points="342 261 351 189 342 108 162 108 162 207 126 207 126 261 342 261"/>
+      <polygon points="279 198 252 207 225 198 225 198 252 198 279 198 279 198"/>
+      <polyline class="cls-4" points="198 162 198 243 306 243 306 162"/>
+      <polygon class="cls-7" points="279 153 306 144 306 162 279 162 279 153"/>
+      <polygon class="cls-7" points="198 144 225 153 225 162 198 162 198 144"/>
+      <polyline class="cls-6" points="216 135 252 144 288 135"/>
+      <rect class="cls-3" x="288" y="225" width="9" height="9"/>
+      <rect class="cls-3" x="207" y="225" width="9" height="9"/>
+      <rect class="cls-15" x="229.5" y="225" width="45" height="9"/>
+    </g>
+  </g>
+  <g id="Eyewear">
+    <g id="Dalai_Lama_Glasses" data-name="Dalai Lama Glasses">
+      <rect class="cls-13" x="261" y="189" width="80.53" height="63"/>
+      <rect class="cls-13" x="162" y="189" width="80.53" height="63"/>
+      <rect class="cls-2" x="162" y="180" width="180" height="9"/>
+      <path class="cls-10" d="M340.47,190.05v60.9h-78.42v-60.9h78.42M341.53,189h-80.53v63h80.53v-63h0Z"/>
+      <path class="cls-10" d="M241.48,190.05v60.9h-78.42v-60.9h78.42M242.53,189h-80.53v63h80.53v-63h0Z"/>
+    </g>
+  </g>
+</svg>
