@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #060604;
+      }
+
+      .cls-4 {
+        fill: #e4e4e4;
+      }
+
+      .cls-5 {
+        fill: #919191;
+      }
+
+      .cls-2 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-6 {
+        opacity: .23;
+      }
+
+      .cls-7 {
+        fill: #704d31;
+      }
+    </style>
+  </defs>
+  <g id="Khomeini">
+    <polygon class="cls-3" points="342 342 315 423 261 486 225 459 189 423 162 369 144 378 144 504 360 504 360.04 342 342 342"/>
+    <polygon class="cls-6" points="315 503.82 333 432 324 378 342 450 315 503.82"/>
+    <polygon class="cls-6" points="221.19 504 261 486 244.32 504 221.19 504"/>
+    <polygon class="cls-4" points="315 369 189 369 189 378 189 423 225 459 261 486 315 423 315 378 315 369"/>
+    <polygon class="cls-6" points="189 360 189 378 189 423 198 378 306 369 189 369 189 360"/>
+    <polygon class="cls-5" points="189 342 162 342 162 369 189 423 189 342"/>
+    <polygon class="cls-5" points="315 423 315 342 342 342 342 360 315 423"/>
+    <polygon class="cls-7" points="315 369 225 459 261 486 315 423 315 369"/>
+    <line class="cls-2" x1="261" y1="369" x2="261" y2="423"/>
+    <line class="cls-2" x1="234" y1="369" x2="234" y2="450"/>
+    <polygon class="cls-1" points="315 423 315 342 342 342 342 360 315 423"/>
+    <polygon class="cls-6" points="315 423 307 396 243 468 315 369 315 369 315 423"/>
+    <polygon class="cls-6" points="315 369 315 342 342 342 315 369"/>
+    <polygon class="cls-6" points="162 369 162 342 189 342 189 369 171 351 162 369"/>
+  </g>
+</svg>
