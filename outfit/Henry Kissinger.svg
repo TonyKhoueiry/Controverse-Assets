@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #5c80e1;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 1.22px;
+      }
+
+      .cls-2, .cls-3 {
+        opacity: .2;
+      }
+
+      .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-5 {
+        fill: #30477e;
+      }
+    </style>
+  </defs>
+  <g id="Henry_Kissinger" data-name="Henry Kissinger">
+    <g>
+      <polygon points="369 315 342 315 342 369 162 369 162 315 135 315 135 504 369 504 369 315"/>
+      <polygon class="cls-4" points="315 342 315 360 189 360 189 342 162 342 162 504 189 504 189.58 504 315 504 315.72 504 342 504 342 342 315 342"/>
+      <g class="cls-3">
+        <polygon points="234 360 189 369 315 369 270.69 360 234 360"/>
+      </g>
+      <polygon class="cls-5" points="270.69 504 234 504 234 360 270.69 360 261 396 270.69 504"/>
+      <g>
+        <path class="cls-1" d="M260.72,369.28v8.43h-8.43v-8.43h8.43M261,369h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M260.72,405.28v8.43h-8.43v-8.43h8.43M261,405h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M260.72,441.28v8.43h-8.43v-8.43h8.43M261,441h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M260.72,477.28v8.43h-8.43v-8.43h8.43M261,477h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M242.72,387.28v8.43h-8.43v-8.43h8.43M243,387h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M242.72,459.28v8.43h-8.43v-8.43h8.43M243,459h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M242.72,495.28v8.43h-8.43v-8.43h8.43M243,495h-9v9h9v-9h0Z"/>
+        <path class="cls-1" d="M242.72,423.28v8.43h-8.43v-8.43h8.43M243,423h-9v9h9v-9h0Z"/>
+      </g>
+      <line class="cls-2" x1="171" y1="432" x2="333" y2="432"/>
+      <line class="cls-2" x1="189" y1="423" x2="306" y2="423"/>
+      <g class="cls-3">
+        <polygon points="234 504 234 360 252 360 243 396 252 504 234 504"/>
+      </g>
+    </g>
+    <g class="cls-3">
+      <polygon points="315 342 315 360 342 342 342 342 315 342"/>
+    </g>
+    <g class="cls-3">
+      <polygon points="162 342 162 342 189 360 189 342 162 342"/>
+    </g>
+  </g>
+</svg>
