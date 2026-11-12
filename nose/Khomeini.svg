@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: .23;
+      }
+
+      .cls-2 {
+        fill: #dcb5a4;
+      }
+    </style>
+  </defs>
+  <g id="Khomeini">
+    <g id="Saddam">
+      <polygon class="cls-2" points="342 108 342 261 369 261 387 261 378 171 342 108"/>
+      <polygon class="cls-1" points="387 261 342 243 342 261 387 261"/>
+    </g>
+  </g>
+</svg>
