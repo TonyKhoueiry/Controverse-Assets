@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e69292;
+      }
+
+      .cls-2 {
+        opacity: .23;
+      }
+
+      .cls-3 {
+        fill: #eaaba2;
+      }
+    </style>
+  </defs>
+  <g id="Khamenei">
+    <polygon class="cls-3" points="342 108 342 261 369 261 387 261 387 189 342 108"/>
+    <polygon class="cls-2" points="369 261 351 243 342 225 342 252 342 261 369 261"/>
+    <polygon class="cls-1" points="387 261 369 234 369 207 387 189 387 261"/>
+    <polygon class="cls-2" points="351 153 369 171 360 189 351 153"/>
+  </g>
+</svg>
