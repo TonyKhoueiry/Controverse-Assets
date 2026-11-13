@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #daddf3;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3 {
+        stroke: #b2b2b2;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        fill: #4983a4;
+      }
+
+      .cls-4 {
+        fill: #2a3e60;
+      }
+
+      .cls-5 {
+        fill: #4d4d4d;
+      }
+
+      .cls-6 {
+        opacity: .2;
+      }
+
+      .cls-7 {
+        fill: #4d9891;
+      }
+    </style>
+  </defs>
+  <g id="Bernie_Sanders" data-name="Bernie Sanders">
+    <polygon class="cls-4" points="342 360 315 360 252 432 189 360 161.48 360 162 504 342.1 504 342 360"/>
+    <polygon class="cls-1" points="315 360 252 432 189 360 189 504.04 315 504 315 360"/>
+    <g class="cls-6">
+      <polygon points="171 504 162 504 161.48 360 170.18 360 171 504"/>
+    </g>
+    <g class="cls-6">
+      <polygon points="272.35 432 297 459 252 459 272.35 432"/>
+    </g>
+    <polygon class="cls-5" points="272.35 432 234 432 234 477 234 504 261 486 252 459 272.35 432"/>
+    <g class="cls-6">
+      <polygon points="234 432 207 468 234 459 234 432"/>
+    </g>
+    <polygon class="cls-7" points="234 504 261 486 270 504 234 504"/>
+    <line class="cls-2" x1="252" y1="459" x2="234" y2="486"/>
+    <polygon class="cls-3" points="234 441 252 459 261 450 252 432 234 432 234 441"/>
+    <polygon class="cls-7" points="234 468 252 459 234 459 234 468"/>
+    <g class="cls-6">
+      <polygon points="189 405 207 459 189 432 198 468 198 504.18 189 504 189 405"/>
+    </g>
+  </g>
+</svg>
