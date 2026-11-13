@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #cdb3aa;
+      }
+
+      .cls-2 {
+        opacity: .23;
+      }
+    </style>
+  </defs>
+  <g id="Karl_Marx" data-name="Karl Marx">
+    <g>
+      <polygon class="cls-1" points="342 108 342 261 396 261 396 224.24 369 198 342 108"/>
+      <polygon class="cls-2" points="342 261 342 261 342 252 396 261 342 261"/>
+    </g>
+  </g>
+</svg>
