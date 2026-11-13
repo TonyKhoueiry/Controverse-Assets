@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Lower_Face" data-name="Lower Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: gray;
+      }
+
+      .cls-2 {
+        fill: #727272;
+      }
+
+      .cls-3 {
+        fill: #e4e4e4;
+      }
+
+      .cls-4 {
+        fill: #b7827f;
+      }
+
+      .cls-5 {
+        fill: #cdb3aa;
+      }
+
+      .cls-6 {
+        fill: #666;
+      }
+
+      .cls-7 {
+        opacity: .23;
+      }
+
+      .cls-8 {
+        opacity: .2;
+      }
+
+      .cls-9 {
+        fill: #cacaca;
+      }
+    </style>
+  </defs>
+  <g id="Karl_Marx" data-name="Karl Marx">
+    <g>
+      <g>
+        <g>
+          <g>
+            <polyline class="cls-5" points="162 261 162 342 189 342 189 503.82 315 503.82 315 342 342 342 342 261 252 243 162 261"/>
+            <g>
+              <polygon class="cls-8" points="315 315 306 342 315 342 315 315"/>
+              <polygon class="cls-8" points="198 342 189 315 189 342 198 342"/>
+            </g>
+          </g>
+          <polygon class="cls-3" points="162 261 162 288 162 306 162 342 189 342 189 360 252 369 315 360 315 342 342 342 342 306 342 288 342 261 324 279 261 261 243 261 180 279 162 261"/>
+          <polygon class="cls-4" points="225 288 252 279 279 288 225 288"/>
+        </g>
+        <polygon class="cls-7" points="189 360 189 396 252 380.13 315 396 315 360 252 369 189 360"/>
+      </g>
+      <polygon class="cls-6" points="234 261 270 261 324 279 333 306 297 306 252 280.59 207 306 171 306 180 279 234 261"/>
+      <polygon class="cls-9" points="270 360 252 369 234 360 243 315 261 315 270 360"/>
+      <polygon class="cls-1" points="261 288 243 288 234 297 270 297 261 288"/>
+      <polygon class="cls-9" points="297 306 324 324 333 306 297 306"/>
+      <polygon class="cls-9" points="171 306 180 324 207 306 171 306"/>
+      <polygon class="cls-2" points="333 306 270 261 324 279 333 306"/>
+      <polygon class="cls-2" points="171 306 234 261 180 279 171 306"/>
+    </g>
+  </g>
+</svg>
