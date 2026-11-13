@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e4ada2;
+      }
+
+      .cls-2 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Bernie_Sanders" data-name="Bernie Sanders">
+    <polygon id="Bernie_s_nose" data-name="Bernie&amp;apos;s nose" class="cls-1" points="342 261 378 261 396 261 396 225 342 108 342 189 342 261"/>
+    <polygon class="cls-2" points="378 261 351 247.5 342 207 342 261 378 261"/>
+  </g>
+</svg>
