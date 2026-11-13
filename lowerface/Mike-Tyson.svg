@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Lower_Face" data-name="Lower Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #85544f;
+      }
+
+      .cls-2 {
+        fill: #96624f;
+      }
+
+      .cls-3 {
+        stroke: #000;
+        stroke-width: 1.04px;
+      }
+
+      .cls-3, .cls-4, .cls-5 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3, .cls-5 {
+        fill: none;
+      }
+
+      .cls-6 {
+        opacity: .4;
+      }
+
+      .cls-7 {
+        opacity: .62;
+      }
+
+      .cls-8 {
+        opacity: .19;
+      }
+
+      .cls-9 {
+        opacity: .25;
+      }
+
+      .cls-4 {
+        fill: #ad7974;
+        stroke: #653d36;
+        stroke-width: 1.42px;
+      }
+
+      .cls-5 {
+        stroke: #c6a398;
+      }
+
+      .cls-10 {
+        fill: #b1755b;
+      }
+    </style>
+  </defs>
+  <g id="Mike_Tyson" data-name="Mike Tyson">
+    <g>
+      <g>
+        <g>
+          <g>
+            <polyline class="cls-2" points="162 261 162 342 189 342 189 503.82 315 503.82 315 342 342 342 342 261 162 261"/>
+            <g>
+              <polygon class="cls-4" points="279 324 225 324 207 306 297 306 279 324"/>
+              <polygon class="cls-1" points="279 297 261 297 252 306 243 297 225 297 207 306 297 306 279 297"/>
+              <polygon class="cls-6" points="270 333 234 333 234 324 252 324 270 324 270 333"/>
+              <polygon class="cls-9" points="198 360 306 360 315 342 315 360 189 378 189 342 189 342 198 360"/>
+            </g>
+          </g>
+          <polyline class="cls-3" points="198 297 207 306 297 306 306 297"/>
+        </g>
+        <polygon class="cls-6" points="297 306 306 315 306 297 297 306"/>
+        <polygon class="cls-6" points="198 297 198 315 207 306 198 297"/>
+        <polyline class="cls-8" points="342 261 315 342 342 342 342 261"/>
+        <polyline class="cls-8" points="162 261 189 342 162 342 162 261"/>
+      </g>
+      <g>
+        <polygon class="cls-2" points="333 504 315 504 315 369 333 378 333 504"/>
+        <polygon class="cls-10" points="189 504 171 504 171 378 189 369 189 504"/>
+        <rect class="cls-9" x="297" y="463.5" width="9" height="9"/>
+        <rect class="cls-9" x="198" y="463.5" width="9" height="9"/>
+        <polygon class="cls-9" points="261 504 252 504 252 432 252 432 261 504"/>
+        <polygon class="cls-9" points="189 405 243 396 252 405 261 396 315 405 189 405"/>
+        <polygon class="cls-9" points="189 504 170.72 504 170.72 378 189 369 189 504"/>
+      </g>
+      <polyline class="cls-5" points="207 306 225 297 243 297 252 306 261 297 279 297 297 306"/>
+      <polygon class="cls-7" points="270 468 288 495 261 486 261 441 288 423 324 432 324 495 306 495 315 450 288 441 270 468"/>
+      <polygon class="cls-7" points="324 405 333 423 333 396 333 387 324 405"/>
+      <polygon class="cls-8" points="306 495 315 450 288 441 270 468 288 495 306 495"/>
+    </g>
+  </g>
+</svg>
