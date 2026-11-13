@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Top_Face" data-name="Top Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ad9790;
+      }
+
+      .cls-2 {
+        fill: #cdb3aa;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #131313;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4 {
+        opacity: .51;
+      }
+    </style>
+  </defs>
+  <g id="Karl_Marx" data-name="Karl Marx">
+    <g>
+      <g id="face_top" data-name="face top">
+        <polygon class="cls-2" points="342 108 162 108 162 207 126 207 126 261 162 261 342 261 351 189 342 108"/>
+      </g>
+      <polygon class="cls-1" points="270 216 252 225 252 225 234 216 216 225 288 225 270 216"/>
+      <g>
+        <g>
+          <polygon class="cls-4" points="207 216 225 207 252 207 234 198 207 216"/>
+          <polygon class="cls-4" points="297 216 279 198 252 207 252 198 279 189 297 216"/>
+          <polygon points="252 207 252 207 234 216 270 216 252 207"/>
+        </g>
+        <polyline class="cls-3" points="216 225 234 216 252 207 270 216 288 225"/>
+      </g>
+    </g>
+  </g>
+</svg>
