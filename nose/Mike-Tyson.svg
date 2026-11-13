@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #96624f;
+      }
+
+      .cls-2 {
+        opacity: .4;
+      }
+    </style>
+  </defs>
+  <g id="Mike_Tyson" data-name="Mike Tyson">
+    <g>
+      <polygon class="cls-1" points="342 108 396 189 405 261 360 261 342 261 342 108"/>
+      <polygon class="cls-2" points="342 261 405 261 351 252 342 234 342 261"/>
+    </g>
+  </g>
+</svg>
