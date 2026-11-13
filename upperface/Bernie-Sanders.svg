@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Top_Face" data-name="Top Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f1f1f1;
+      }
+
+      .cls-2 {
+        fill: #e4ada2;
+      }
+
+      .cls-3 {
+        fill: #534741;
+      }
+
+      .cls-4 {
+        stroke-width: .94px;
+      }
+
+      .cls-4, .cls-5 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4, .cls-6 {
+        opacity: .2;
+      }
+
+      .cls-7 {
+        fill: #e59c95;
+      }
+
+      .cls-5 {
+        fill: none;
+        stroke-width: .87px;
+      }
+    </style>
+  </defs>
+  <g id="Bernie_Sanders" data-name="Bernie Sanders">
+    <polygon class="cls-2" points="342 261 351 189 342 108 162 108 162 207 126 207 126 261 342 261"/>
+    <rect class="cls-7" x="279" y="243" width="27" height="18"/>
+    <rect class="cls-7" x="198" y="243" width="27" height="18"/>
+    <g class="cls-6">
+      <polygon points="171 189 171 225 180 225 180 198 324 198 324 225 333 225 333 189 171 189"/>
+    </g>
+    <line class="cls-4" x1="207" y1="153" x2="297" y2="153"/>
+    <line class="cls-4" x1="207" y1="162" x2="297" y2="162"/>
+    <polygon points="279 207 270 207 252 207 234 207 225 207 252 198 252 198 279 207"/>
+    <g class="cls-6">
+      <polygon points="297 216 252 225 207 216 216 225 288 225 297 216"/>
+    </g>
+    <line class="cls-5" x1="252" y1="234" x2="252" y2="180"/>
+    <path class="cls-3" d="M331,191v41h-158v-41h158M333,189h-162v45h162v-45h0Z"/>
+    <path class="cls-1" d="M323.29,198.71v25.58h-61.58v-25.58h61.58M324,198h-63v27h63v-27h0Z"/>
+    <path class="cls-1" d="M242.29,198.71v25.58h-61.58v-25.58h61.58M243,198h-63v27h63v-27h0Z"/>
+  </g>
+</svg>
