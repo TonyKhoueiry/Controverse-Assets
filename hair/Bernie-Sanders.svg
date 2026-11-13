@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Hair" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="Bernie_Sanders" data-name="Bernie Sanders">
+    <polygon class="cls-1" points="342 108 378 108 369 114.75 396 135 369 126 396 162 369 207 360 207 360 243 342 261 351 189 342 108"/>
+    <polygon class="cls-1" points="162 243 162 108 333 108 171 79.41 216 99 135 99 153 108 117 162 139.05 153 119.25 189 135 207 144 207 144 243 162 243"/>
+  </g>
+</svg>
