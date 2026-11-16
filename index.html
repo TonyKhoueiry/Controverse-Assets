@@ -200,16 +200,6 @@
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   }
 
-  .stage-toggle {
-    display: none;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: rgba(12, 12, 14, .55);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    color: #fff;
-    place-items: center;
-  }
-  .stage-toggle svg { width: 18px; height: 18px; transition: transform .25s ease; }
-  .workspace.compact .stage-toggle svg { transform: rotate(180deg); }
   .loader {
     position: absolute; right: 16px; top: 16px; z-index: 5;
     width: 18px; height: 18px; border-radius: 50%;
@@ -410,10 +400,7 @@
       --r-lg: 16px;
       transition: width .25s ease, background-color .35s ease;
     }
-    .workspace.compact .stage { width: min(100%, 17vh); width: min(100%, 17dvh); }
     .stage-caption { left: 8px; bottom: 8px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 56px); }
-    .workspace.compact .stage-caption { display: none; }
-    .stage-toggle { display: grid; width: 30px; height: 30px; right: 8px; bottom: 8px; }
     /* the background colours get their own tab, so the swatch bar is not needed here */
     .swatch-bar { display: none; }
     .inspector { flex: 1; --r-lg: 16px; }
@@ -435,8 +422,6 @@
     .workspace { flex-direction: row; align-items: stretch; max-width: none; }
     .stage-col { justify-content: center; }
     .stage { width: auto; height: 100%; max-width: 46vw; aspect-ratio: 1 / 1; }
-    .workspace.compact .stage { width: auto; height: 100%; }
-    .stage-toggle { display: none; }
   }
 
   /* Enlarged portrait — an id selector so it wins over the layout rules above */
@@ -451,7 +436,6 @@
     border-radius: 18px;
     box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .9);
   }
-  #display-box.zoomed .stage-toggle { display: none; }
   #display-box.zoomed .stage-tools { right: 12px; top: 12px; }
 
   /* ---------- Share dialog ---------- */
@@ -543,9 +527,6 @@
         <dl id="info-list"></dl>
       </div>
       <div id="stage-caption" class="stage-caption" aria-hidden="true"></div>
-      <button id="stage-toggle" class="stage-toggle" type="button" aria-label="Shrink the portrait" aria-expanded="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>
-      </button>
     </div>
     <div class="swatch-bar">
       <div class="swatch-label"><span>Background</span><strong id="bg-name">Bone</strong></div>
@@ -752,7 +733,6 @@
   const SNAPSHOT = ["hair/Andy-Warhol.png","hair/Angela Merkel.png","hair/Bashar-al-Assad.png","hair/Bernie-Sanders.png","hair/Bibi-Natanyahu.svg","hair/Biggie.png","hair/Bob-Marley.png","hair/Che-Guevara.png","hair/Dalai-Lama.png","hair/Dali.png","hair/Donald-Trump---Cap.png","hair/Donald-Trump.png","hair/Edward-Snowden.png","hair/Einstein.png","hair/Elon-Musk.png","hair/Emmanuel-Macron.png","hair/Fidel-Castro.png","hair/Frida.png","hair/Greta-Thunberg.png","hair/Hassan-Nasrallah.png","hair/Henry-Kissinger.png","hair/Hitler.png","hair/Jeremy-Corbyn.png","hair/Joe-Biden.png","hair/John-Lennon-1.png","hair/John-Lennon-2.png","hair/Julian-Assange.png","hair/Khamenei.png","hair/Khomeini.png","hair/Kim Jong Un.png","hair/Kim Kardashian -  Blond.png","hair/Kim Kardashian -Brunette.png","hair/Lady-D.png","hair/Lionel-Messi.png","hair/Mahatma-Gandhi.png","hair/Marilyn-Monroe.png","hair/Marilyn-by-Walhol.png","hair/Mark-Zuckerberg.png","hair/Martin-Luther-King.png","hair/Michael-Jackson.png","hair/Michael-Jordan.png","hair/Mike-Tyson.png","hair/Mohammed-bin-Rashid-Al-Maktoum.png","hair/Mohammed-bin-Salman-Al-Saud.png","hair/Mother-Theresa.png","hair/Narendra-Modi.png","hair/Nelson-Mandela.png","hair/Olaf-Scholz.png","hair/Oprah-Winfrey.png","hair/Pope-Francis.png","hair/Queen-Elizabeth-II.png","hair/Recep-Tayyip-Erdog\u0306an.png","hair/Ronaldo.png","hair/Saddam-Hussein.png","hair/Serena-Williams.png","hair/Snoop-Dog.png","hair/Steve-Jobs.png","hair/Tupac Cap.png","hair/Tupac.png","hair/Ursula-von-der-Leyen.png","hair/Vladimir-Putin.png","hair/Volodymyr-Zelenskyy.png","hair/Xi-Jinping.png","hair/Yasser-Arafat.png","headgear/Biggie.png","headgear/Fidel Castro.png","headgear/Queen Elizabeth II - Purple.png","lowerface/Andy Warhol.png","lowerface/Angela Merkel.png","lowerface/Bashar al-Assad.png","lowerface/Bernie Sanders.png","lowerface/Bibi-Natanyahu.svg","lowerface/Biggie.png","lowerface/Bob Marley.png","lowerface/Che Guevara Poster.png","lowerface/Che Guevara.png","lowerface/Dalai Lama.png","lowerface/Dali.png","lowerface/Donald Trump.png","lowerface/Edward Snowden.png","lowerface/Einstein.png","lowerface/Elon Musk.png","lowerface/Emmanuel Macron.png","lowerface/Fidel Castro.png","lowerface/Frida Kahlo.png","lowerface/Greta Thurnberg.png","lowerface/Hassan Nasrallah.png","lowerface/Henry Kissinger.png","lowerface/Hitler.png","lowerface/Jeremy Corbyn.png","lowerface/Joe Biden.png","lowerface/John Lennon 1.png","lowerface/John Lennon 2.png","lowerface/Julian Assange.png","lowerface/Khamenei.png","lowerface/Khomeini.png","lowerface/Kim Jong Un.png","lowerface/Kim Kardashian.png","lowerface/Lady D.png","lowerface/Lionel Messi.png","lowerface/Mahatma Gandhi.png","lowerface/Marilyn Monroe.png","lowerface/Marilyn by Warhol.png","lowerface/Mark Zuckerberg.png","lowerface/Martin Luther King.png","lowerface/Michael Jackson.png","lowerface/Michael Jordan.png","lowerface/Mike Tyson.png","lowerface/Mohammed bin Rashid Al Maktoum.png","lowerface/Mohammed bin Salman Al Saud.png","lowerface/Mother Theresa.png","lowerface/Narendra Modi.png","lowerface/Nelson Mandela.png","lowerface/Olaf Scholz.png","lowerface/Oprah Winfrey.png","lowerface/Pepe.png","lowerface/Pope Francis.png","lowerface/Queen Elizabeth II.png","lowerface/Recep-Tayyip-Erdog\u0306an.png","lowerface/Ronaldo.png","lowerface/Saddam-Hussein.png","lowerface/Serena Williams.png","lowerface/Snoop Dog.png","lowerface/Steve Jobs.png","lowerface/Tupac.png","lowerface/Ursula von der Leyen.png","lowerface/Vladimir Putin.png","lowerface/Volodymyr Zelenskyy.png","lowerface/Xi-Jinping.png","lowerface/Yasser Arafat.png","nose/Andy-Warhol.png","nose/Angela-Merkel.png","nose/Bashar-al-Assad.png","nose/Bernie-Sanders.png","nose/Bibi-Natanyahu.svg","nose/Biggie.png","nose/Bob-Marley.png","nose/Che-Guevara-Poster.png","nose/Che-Guevara.png","nose/Dalai-Lama.png","nose/Dali.png","nose/Donald-Trump.png","nose/Edward-Snowden.png","nose/Einstein.png","nose/Elon-Musk.png","nose/Emmanuel-Macron.png","nose/Fidel-Castro.png","nose/Frida.png","nose/Greta-Thunberg.png","nose/Hassan-Nasrallah.png","nose/Henry-Kissinger.png","nose/Hitler.png","nose/Jeremy-Corbyn.png","nose/Joe-Biden.png","nose/John-Lennon.png","nose/Julian-Assange.png","nose/Khamenei.png","nose/Khomeini.png","nose/Kim-Jong-Un.png","nose/Kim-Kardashian.png","nose/Lady-D.png","nose/Lionel-Messi.png","nose/Mahatma-Gandhi.png","nose/Marilyn-Monroe.png","nose/Marilyn-by-Walhol.png","nose/Mark-Zuckerberg.png","nose/Martin-Luther-King.png","nose/Michael-Jackson.png","nose/Michael-Jordan.png","nose/Mike-Tyson.png","nose/Mohammed-bin-Rashid-Al-Maktoum.png","nose/Mohammed-bin-Salman-Al-Saud.png","nose/Mother-Theresa.png","nose/Narendra-Modi.png","nose/Nelson-Mandela.png","nose/Olaf-Scholz.png","nose/Oprah-Winfrey.png","nose/Pepe.png","nose/Pope-Francis.png","nose/Queen-Elizabeth-II.png","nose/Recep-Tayyip-Erdog\u0306an.png","nose/Ronaldo.png","nose/Saddam-Hussein.png","nose/Serena-Williams.png","nose/Snoop-Dog.png","nose/Steve-Jobs.png","nose/Tupac.png","nose/Ursula-von-der-Leyen.png","nose/Vladimir-Purtin.png","nose/Volodymyr-Zelenskyy.png","nose/Xi-Jinping.png","nose/Yasser-Arafat.png","outfit/Andy Warhol.png","outfit/Angela Merkel.png","outfit/Bashar al-Assad.png","outfit/Bernie-01.png","outfit/Bibi-Natanyahu.svg","outfit/Biggie.png","outfit/Bob Marley.png","outfit/Che Guevara Poster.png","outfit/Che Guevara.png","outfit/Controverse Shirt - Blue-01.png","outfit/Controverse Shirt-Pink.png","outfit/Dalai Lama.png","outfit/Dali.png","outfit/Donald Trump.png","outfit/ETH - Fur.png","outfit/ETH - Shirt.png","outfit/Edward Snowden.png","outfit/Einstein.png","outfit/Elon Musk.png","outfit/Emmanuel Macron.png","outfit/Fidel Castro.png","outfit/Frida Kahlo.png","outfit/Greta Thurnberg.png","outfit/Hassan Nasrallah.png","outfit/Henry Kissinger.png","outfit/Hitler.png","outfit/Jeremy Corbyn-01.png","outfit/Joe Biden.png","outfit/John Lennon.png","outfit/Julian Assange Jacket.png","outfit/Julian Assange Tshirt.png","outfit/Julian Assange.png","outfit/Khamenei.png","outfit/Khomeini.png","outfit/Kim Jong Un.png","outfit/Kim Kardashian - Hoodie.png","outfit/Kim Kardashian.png","outfit/Lady D.png","outfit/Lionel Messi.png","outfit/Mahatma Gandhi.png","outfit/Marilyn Monroe.png","outfit/Marilyn by Warhol.png","outfit/Mark Zuckerberg.png","outfit/Martin Luther King.png","outfit/McDonalds Shirt.png","outfit/Michael Jackson - Black.png","outfit/Michael Jackson - Red.png","outfit/Michael Jordan.png","outfit/Mike Tyson.png","outfit/Mohammed bin Rashid Al Maktoum.png","outfit/Mohammed bin Salman Al Saud.png","outfit/Mother Theresa.png","outfit/Narendra Modi.png","outfit/Nelson Mandela.png","outfit/Olaf Scholz.png","outfit/Oprah Winfrey.png","outfit/Pepe.png","outfit/Pope Francis.png","outfit/Queen Elizabeth II.png","outfit/Recep Tayyip Erdog\u0306an.png","outfit/Ronaldo.png","outfit/Saddam Hussein.png","outfit/Serena Williams.png","outfit/Snoop Dog.png","outfit/Steve Jobs.png","outfit/Threads - Shirt.png","outfit/Tshirt-Twitter.png","outfit/Tupac.png","outfit/Ursula von der Leyen.png","outfit/Vladimir Putin.png","outfit/Volodymyr Zelenskyy.png","outfit/Xi Jinping.png","outfit/Yasser Arafat.png","props/Bob's joint.png","props/Eintein Pipe.png","props/Fidel's Cigar.png","props/Football.png","props/Kalashnikov.png","props/Podium.png","props/Red Halo.png","props/White Halo.png","upperface/Andy-Warhol.png","upperface/Angela-Merkel.png","upperface/Bashar-al-Assad.png","upperface/Bernie-Sanders.png","upperface/Bibi-Natanyahu.svg","upperface/Biggie.png","upperface/Bob-Marley.png","upperface/Che-Guevara-Poster.png","upperface/Che-Guevara.png","upperface/Dalai-Lama.png","upperface/Dalai-Lama.svg","upperface/Dali.png","upperface/Donald-Trump.png","upperface/Edward-Snowden.png","upperface/Einstein.png","upperface/Elon-Musk.png","upperface/Emmanuel-Macron.png","upperface/Fidel-Castro.png","upperface/Frida.png","upperface/Greta-Thunberg.png","upperface/Hassan-Nasrallah.png","upperface/Henry-Kissinger.png","upperface/Hitler.png","upperface/Jeremy-Corbyn.png","upperface/Joe-Biden.png","upperface/John-Lennon-2.png","upperface/John-Lennon.png","upperface/Julian-Assange.png","upperface/Khamenei.png","upperface/Khomeini.png","upperface/Kim-Jong-Un.png","upperface/Kim-Kardashian.png","upperface/Lady-D.png","upperface/Lionel-Messi.png","upperface/Mahatma-Gandhi.png","upperface/Marilyn-Monroe.png","upperface/Marilyn-by-Warhol.png","upperface/Mark-Zuckerberg.png","upperface/Martin-Luther-King.png","upperface/Michael-Jackson.png","upperface/Michael-Jordan.png","upperface/Mike-Tyson.png","upperface/Mohammed-bin-Rashid-Al-Maktoum.png","upperface/Mohammed-bin-Salman-Al-Saud.png","upperface/Mother-Theresa.png","upperface/Narendra-Modi.png","upperface/Nelson-Mandela.png","upperface/Olaf-Scholz.png","upperface/Oprah-Winfrey.png","upperface/Pepe.png","upperface/Pope-Francis.png","upperface/Queen-Elizabeth-II.png","upperface/Recep-Tayyip-Erdog\u0306an.png","upperface/Ronaldo.png","upperface/Saddam-Hussein.png","upperface/Serena-Williams.png","upperface/Snoop-Dog.png","upperface/Steve-Jobs.png","upperface/Tupac.png","upperface/Ursula-von-der-Leyen.png","upperface/Vladimir-Putin.png","upperface/Volodymyr-Zelenskyy.png","upperface/Xi-Jinping.png","upperface/Yasser-Arafat.png","upperface/dalai-lama.png"];
 
   const CACHE_KEY = 'controverse:tree:v1';
-  const COMPACT_KEY = 'controverse:compact';
   const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
   const EXPORT_SIZE = 1600;
 
@@ -764,8 +744,7 @@
   const els = {
     stage: $('display-box'), layers: $('layers'), caption: $('stage-caption'),
     swatches: $('swatches'), bgName: $('bg-name'),
-    tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'), stageToggle: $('stage-toggle'),
-    infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
+    tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'),     infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
     zoomButton: $('zoom-button'), backdrop: $('stage-backdrop'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
     search: $('search-input'), suggestions: $('search-suggestions'),
     shuffle: $('shuffle-button'), share: $('share-button'),
@@ -947,9 +926,7 @@
     const names = CATEGORIES.filter((c) => !c.optional && state.traits[c.key].length)
       .map((c) => state.sel[c.key]?.name).filter(Boolean);
     const unique = [...new Set(names)];
-    let text = '';
-    if (names.length && unique.length === 1) text = unique[0];
-    else if (unique.length > 1) text = `Mix of ${unique.length} figures`;
+    const text = names.length && unique.length === 1 ? unique[0] : '';
     els.caption.textContent = text;
     els.caption.classList.toggle('show', !!text);
   }
@@ -1030,10 +1007,7 @@
     els.infoPanel.hidden = !on;
     els.infoButton.setAttribute('aria-expanded', String(on));
     els.infoButton.setAttribute('aria-label', on ? 'Hide the names of the parts used' : 'Show the names of the parts used');
-    if (on) {
-      if (els.workspace.classList.contains('compact')) setCompact(false);
-      renderInfo();
-    }
+    if (on) renderInfo();
   }
 
   function setZoom(on) {
@@ -1042,13 +1016,6 @@
     els.zoomButton.setAttribute('aria-pressed', String(on));
     els.zoomButton.setAttribute('aria-label', on ? 'Back to the normal size' : 'Enlarge the portrait');
     document.body.style.overflow = on ? 'hidden' : '';
-  }
-
-  function setCompact(on) {
-    els.workspace.classList.toggle('compact', on);
-    els.stageToggle.setAttribute('aria-expanded', String(!on));
-    els.stageToggle.setAttribute('aria-label', on ? 'Show the portrait larger' : 'Shrink the portrait');
-    try { localStorage.setItem(COMPACT_KEY, on ? '1' : '0'); } catch { /* storage unavailable */ }
   }
 
   // ---------- tabs & grid ----------
@@ -1566,11 +1533,9 @@
     bindShare();
     els.shuffle.addEventListener('click', () => { state.touched = true; shuffle(); });
     els.shuffleOne.addEventListener('click', shuffleOne);
-    els.stageToggle.addEventListener('click', () => setCompact(!els.workspace.classList.contains('compact')));
     els.infoButton.addEventListener('click', () => setInfo(els.infoPanel.hidden));
     els.zoomButton.addEventListener('click', () => setZoom(!els.stage.classList.contains('zoomed')));
     els.backdrop.addEventListener('click', () => setZoom(false));
-    try { if (localStorage.getItem(COMPACT_KEY) === '1') setCompact(true); } catch { /* storage unavailable */ }
 
     // the colour tab only exists on a phone, so rebuild when the layout changes
     let phone = isPhone();
