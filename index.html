@@ -102,9 +102,9 @@
     .logo-mark { display: block; }
   }
   @media (max-width: 480px) {
-    .btn-label { display: none; }
-    .btn { width: 36px; padding: 0; }
-    .btn-order { width: auto; padding: 0 12px; }
+    .top-actions .btn-label { display: none; }
+    .top-actions .btn { width: 36px; padding: 0; }
+    .top-actions .btn-order { width: auto; padding: 0 12px; }
   }
 
   /* ---------- Workspace ---------- */
@@ -149,8 +149,8 @@
     pointer-events: none; user-select: none;
   }
   .stage-caption {
-    position: absolute; left: 14px; bottom: 14px; z-index: 5;
-    max-width: calc(100% - 28px);
+    position: absolute; left: 12px; bottom: 12px; z-index: 5;
+    max-width: calc(100% - 68px);
     padding: 6px 12px;
     border-radius: 999px;
     background: rgba(12, 12, 14, .55);
@@ -161,10 +161,6 @@
     transition: opacity .25s, transform .25s;
   }
   .stage-caption.show { opacity: 1; transform: none; }
-  .stage-tools {
-    position: absolute; right: 10px; top: 10px; z-index: 6;
-    display: flex; gap: 6px;
-  }
   .stage-btn {
     width: 24px; height: 24px; border-radius: 50%;
     display: grid; place-items: center;
@@ -173,9 +169,13 @@
     color: #fff;
     transition: background-color .15s;
   }
+  .stage-btn { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); }
   .stage-btn:hover { background: rgba(12, 12, 14, .78); }
   .stage-btn svg { width: 12px; height: 12px; }
-  .stage-btn-left { position: absolute; left: 10px; top: 10px; z-index: 6; }
+  .stage-tools {
+    position: absolute; right: 10px; top: 10px; z-index: 6;
+    display: flex; flex-direction: column; gap: 6px;
+  }
   .stage-btn[aria-expanded="true"], .stage-btn[aria-pressed="true"] { background: var(--accent); }
   #zoom-button .ico-out { display: none; }
   #display-box.zoomed #zoom-button .ico-in { display: none; }
@@ -183,9 +183,9 @@
 
   /* The list of parts, over the portrait */
   .info-panel {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 7;
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
     max-height: 78%; overflow-y: auto;
-    padding: 14px 16px 16px;
+    padding: 14px 48px 16px 16px;
     background: linear-gradient(to top, rgba(10, 10, 12, .93) 70%, rgba(10, 10, 12, 0));
     color: #fff;
     animation: info-in .2s ease;
@@ -209,7 +209,7 @@
   }
 
   .loader {
-    position: absolute; right: 14px; bottom: 14px; z-index: 5;
+    position: absolute; left: 50%; top: 50%; margin: -9px 0 0 -9px; z-index: 5;
     width: 18px; height: 18px; border-radius: 50%;
     border: 2px solid rgba(0,0,0,.12); border-top-color: rgba(0,0,0,.5);
     animation: spin .7s linear infinite;
@@ -404,11 +404,13 @@
     }
     .stage-col { align-items: center; flex-shrink: 0; gap: 8px; }
     .stage {
-      width: min(100%, 34vh); width: min(100%, 34dvh);
+      width: min(100%, 34vh);
+      width: var(--stage-size, min(100%, 34dvh));
       --r-lg: 16px;
-      transition: width .25s ease, background-color .35s ease;
+      transition: background-color .35s ease;
     }
-    .stage-caption { left: 8px; bottom: 8px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 56px); }
+    .stage.snapping { transition: width .18s ease, background-color .35s ease; }
+    .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 60px); }
     /* the background colours get their own tab, so the swatch bar is not needed here */
     .swatch-bar { display: none; }
     .inspector { flex: 1; --r-lg: 16px; }
@@ -444,8 +446,102 @@
     border-radius: 18px;
     box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .9);
   }
-  #display-box.zoomed .stage-tools { right: 12px; top: 12px; }
-  #display-box.zoomed .stage-btn-left { left: 12px; top: 12px; }
+  #display-box.zoomed .stage-tools { right: 14px; top: 14px; }
+
+  /* Drag bar between the portrait and the picker (phones, upright) */
+  .split-handle { display: none; }
+  @media (max-width: 959px) and (orientation: portrait) {
+    .split-handle {
+      display: flex; align-items: center; justify-content: center;
+      height: 22px; flex-shrink: 0;
+      cursor: row-resize;
+      touch-action: none;
+      -webkit-user-select: none; user-select: none;
+    }
+    .split-handle span {
+      width: 44px; height: 4px; border-radius: 2px;
+      background: var(--line-strong);
+      transition: background-color .15s, width .15s;
+    }
+    .split-handle:hover span, .split-handle.dragging span { width: 60px; background: var(--accent); }
+    .split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 8px; }
+    .inspector-head { padding-top: 2px; }
+  }
+
+  /* ---------- Name this portrait ---------- */
+  #display-box { cursor: pointer; }
+  #display-box.zoomed { cursor: default; }
+
+  .suggest {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px max(16px, env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .suggest-inner { width: 100%; max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+  .suggest-back { align-self: flex-start; }
+  .suggest-top { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 720px) { .suggest-top { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
+  .suggest-figure { margin: 0; }
+  .suggest-figure img {
+    display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+    border-radius: var(--r-lg); background: var(--stage-bg);
+  }
+  .suggest-form { display: flex; flex-direction: column; gap: 10px; }
+  .suggest-form h2 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -.02em; }
+  .suggest-lede { margin: 0 0 6px; color: var(--muted); font-size: 14px; max-width: 46ch; }
+  .field-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .suggest input[type="text"] {
+    width: 100%; height: 44px; padding: 0 14px;
+    background: var(--raised); border: 1px solid transparent; border-radius: var(--r-sm);
+    font-size: 15px; outline: none; transition: border-color .15s, background-color .15s;
+  }
+  .suggest input[type="text"]::placeholder { color: var(--faint); }
+  .suggest input[type="text"]:focus { border-color: var(--accent); background: var(--bg); }
+  .word-row { display: flex; gap: 8px; }
+  .word-row .btn { height: 44px; flex-shrink: 0; }
+  .word-chips { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .word-chips:empty { display: none; }
+  .word-chips li {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 6px 5px 12px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 13px; font-weight: 600;
+  }
+  .word-chips button {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255, 255, 255, .12); color: inherit; font-size: 13px; line-height: 1;
+  }
+  .word-chips button:hover { background: rgba(255, 255, 255, .24); }
+  .suggest-error { min-height: 1.2em; margin: 0; font-size: 13px; color: #ff9a8b; }
+  .suggest-error:empty { min-height: 0; }
+  .suggest-submit { align-self: flex-start; height: 44px; padding: 0 22px; }
+  .suggest-note { margin: 0; font-size: 12px; color: var(--faint); }
+
+  .suggest-list-head { border-top: 1px solid var(--line); padding-top: 18px; }
+  .suggest-list-head h2 { margin: 0; font-size: 16px; font-weight: 650; }
+  .suggest-list-head span { color: var(--muted); font-weight: 500; }
+  .suggest-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .suggest-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .suggest-card.mine { border-color: var(--accent); }
+  .suggest-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .suggest-card h3 { margin: 0; font-size: 16px; font-weight: 650; }
+  .suggest-card time { font-size: 11px; color: var(--faint); white-space: nowrap; }
+  .suggest-card .words { display: flex; flex-wrap: wrap; gap: 6px; }
+  .suggest-card .words span {
+    padding: 3px 10px; border-radius: 999px;
+    background: var(--raised); color: var(--text-2); font-size: 12px;
+  }
+  .suggest-card .open-link {
+    align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--accent);
+    background: none; padding: 0;
+  }
+  .suggest-card .open-link:hover { text-decoration: underline; }
+  .suggest-empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
 
   /* ---------- Share dialog ---------- */
   dialog {
@@ -504,15 +600,7 @@
     <small>Don't Mix Your Drinks</small>
   </div>
   <div class="top-actions">
-    <button id="shuffle-button" class="btn btn-ghost" type="button" title="Shuffle (S)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg>
-      <span class="btn-label">Shuffle</span>
-    </button>
     <a id="order-button" class="btn btn-order" href="#" aria-label="Order a print (link coming soon)">Order</a>
-    <button id="share-button" class="btn btn-primary" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
-      <span class="btn-label">Share</span>
-    </button>
   </div>
 </header>
 
@@ -523,14 +611,16 @@
     <div id="display-box" class="stage" role="img" aria-label="Portrait preview">
       <div id="layers"></div>
       <div class="loader" aria-hidden="true"></div>
-      <button id="info-button" class="stage-btn stage-btn-left" type="button" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
+      <div class="stage-tools">
+      <button id="shuffle-button" class="stage-btn" type="button" title="Shuffle (S)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg></button>
+      <button id="info-button" class="stage-btn" type="button" title="Parts used" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg>
       </button>
-      <div class="stage-tools">
-        <button id="zoom-button" class="stage-btn" type="button" aria-label="Enlarge the portrait" aria-pressed="false">
+      <button id="share-button" class="stage-btn" type="button" title="Share" aria-label="Share this portrait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
+      <button id="zoom-button" class="stage-btn" type="button" aria-label="Enlarge the portrait" aria-pressed="false">
           <svg class="ico-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v5"/><path d="M4 4l6 6"/><path d="M15 20h5v-5"/><path d="M20 20l-6-6"/></svg>
-          <svg class="ico-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h5V4"/><path d="M10 10 4 4"/><path d="M20 15h-5v5"/><path d="m14 14 6 6"/></svg>
-        </button>
+        <svg class="ico-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h5V4"/><path d="M10 10 4 4"/><path d="M20 15h-5v5"/><path d="m14 14 6 6"/></svg>
+      </button>
       </div>
       <div id="info-panel" class="info-panel" hidden>
         <h3>Parts in this portrait</h3>
@@ -545,6 +635,10 @@
   </section>
 
   <section class="inspector" aria-label="Choose features">
+    <div id="split-handle" class="split-handle" role="separator" aria-orientation="horizontal"
+         tabindex="0" aria-label="Drag to resize the portrait and the picker" title="Drag to resize">
+      <span aria-hidden="true"></span>
+    </div>
     <div class="inspector-head">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -566,6 +660,45 @@
     </div>
   </section>
 </main>
+
+<section id="suggest-view" class="suggest" hidden aria-label="Name this portrait">
+  <div class="suggest-inner">
+    <button id="suggest-back" class="btn btn-ghost suggest-back" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+      <span>Back to the builder</span>
+    </button>
+
+    <div class="suggest-top">
+      <figure class="suggest-figure">
+        <img id="suggest-image" alt="The portrait you are naming">
+      </figure>
+
+      <form id="suggest-form" class="suggest-form" novalidate>
+        <h2>Who is this?</h2>
+        <p class="suggest-lede">Give this face a name, then add the words that describe it — one word at a time.</p>
+
+        <label class="field-label" for="suggest-name">Name</label>
+        <input type="text" id="suggest-name" maxlength="40" autocomplete="off" placeholder="e.g. The Peacemaker">
+
+        <label class="field-label" for="suggest-word">Words</label>
+        <div class="word-row">
+          <input type="text" id="suggest-word" maxlength="24" autocomplete="off" placeholder="One word, then Enter">
+          <button id="suggest-add" class="btn btn-ghost" type="button">Add</button>
+        </div>
+        <ul id="suggest-words" class="word-chips" aria-label="Your words"></ul>
+
+        <p id="suggest-error" class="suggest-error" role="alert"></p>
+        <button id="suggest-submit" class="btn btn-primary suggest-submit" type="submit">Send suggestion</button>
+        <p class="suggest-note">Suggestions are public. Keep it to single words.</p>
+      </form>
+    </div>
+
+    <div class="suggest-list-head">
+      <h2>What others said <span id="suggest-count"></span></h2>
+    </div>
+    <ul id="suggest-list" class="suggest-list"></ul>
+  </div>
+</section>
 
 <dialog id="share-modal" aria-labelledby="share-title">
   <div class="dlg-body">
@@ -755,7 +888,13 @@
     stage: $('display-box'), layers: $('layers'), caption: $('stage-caption'),
     swatches: $('swatches'), bgName: $('bg-name'),
     tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'),     infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
-    zoomButton: $('zoom-button'), backdrop: $('stage-backdrop'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
+    zoomButton: $('zoom-button'), backdrop: $('stage-backdrop'),
+    main: document.querySelector('main.workspace'),
+    splitHandle: $('split-handle'),
+    suggest: $('suggest-view'), suggestBack: $('suggest-back'), suggestImage: $('suggest-image'),
+    suggestForm: $('suggest-form'), suggestName: $('suggest-name'), suggestWord: $('suggest-word'),
+    suggestAdd: $('suggest-add'), suggestWords: $('suggest-words'), suggestError: $('suggest-error'),
+    suggestList: $('suggest-list'), suggestCount: $('suggest-count'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
     search: $('search-input'), suggestions: $('search-suggestions'),
     shuffle: $('shuffle-button'), share: $('share-button'),
     modal: $('share-modal'), close: $('close-share-modal'), preview: $('share-preview'),
@@ -1020,6 +1159,111 @@
     if (on) renderInfo();
   }
 
+  /* ---------------------------------------------------------------
+     The drag bar between the portrait and the picker (phones, upright).
+     Dragging it sets the portrait's size; the picker takes whatever is
+     left, so the gallery grows as the portrait shrinks.
+     --------------------------------------------------------------- */
+  const SPLIT_KEY = 'controverse:split';
+  const SPLIT_MIN = 132;   // keeps the column of buttons inside the portrait
+  const PICKER_MIN = 240;
+
+  const canSplit = () => window.matchMedia('(max-width: 959px) and (orientation: portrait)').matches;
+
+  function splitRange() {
+    const box = els.workspace.getBoundingClientRect();
+    const max = Math.max(SPLIT_MIN + 40, Math.min(box.width, box.height - PICKER_MIN));
+    return { min: SPLIT_MIN, max };
+  }
+
+  function defaultStageSize() {
+    const box = els.workspace.getBoundingClientRect();
+    return Math.min(box.width, window.innerHeight * 0.34);
+  }
+
+  function setStageSize(px, { save = true } = {}) {
+    const { min, max } = splitRange();
+    const size = Math.round(Math.min(max, Math.max(min, px)));
+    els.workspace.style.setProperty('--stage-size', `${size}px`);
+    els.splitHandle.setAttribute('aria-valuenow', String(size));
+    els.splitHandle.setAttribute('aria-valuemin', String(min));
+    els.splitHandle.setAttribute('aria-valuemax', String(max));
+    if (save) { try { localStorage.setItem(SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
+    return size;
+  }
+
+  function snapStageSize(px) {
+    const { min, max } = splitRange();
+    const points = [min, defaultStageSize(), max];
+    const near = points.find((p) => Math.abs(p - px) < 26);
+    els.stage.classList.add('snapping');
+    setTimeout(() => els.stage.classList.remove('snapping'), 220);
+    setStageSize(near ?? px);
+  }
+
+  function bindSplit() {
+    const handle = els.splitHandle;
+    let start = null;
+
+    handle.addEventListener('pointerdown', (e) => {
+      if (!canSplit()) return;
+      start = { y: e.clientY, size: els.stage.getBoundingClientRect().width, moved: false };
+      handle.setPointerCapture(e.pointerId);
+      handle.classList.add('dragging');
+      e.preventDefault();
+    });
+
+    handle.addEventListener('pointermove', (e) => {
+      if (!start) return;
+      const next = start.size + (e.clientY - start.y);
+      if (Math.abs(e.clientY - start.y) > 2) start.moved = true;
+      setStageSize(next, { save: false });
+    });
+
+    const end = () => {
+      if (!start) return;
+      handle.classList.remove('dragging');
+      if (start.moved) snapStageSize(els.stage.getBoundingClientRect().width);
+      start = null;
+    };
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+
+    // a double tap flips between the smallest portrait and the usual one
+    handle.addEventListener('dblclick', () => {
+      if (!canSplit()) return;
+      const { min } = splitRange();
+      const now = els.stage.getBoundingClientRect().width;
+      els.stage.classList.add('snapping');
+      setTimeout(() => els.stage.classList.remove('snapping'), 220);
+      setStageSize(now > min + 20 ? min : defaultStageSize());
+    });
+
+    handle.addEventListener('keydown', (e) => {
+      if (!canSplit()) return;
+      const step = e.key === 'PageUp' || e.key === 'PageDown' ? 60 : 20;
+      const now = els.stage.getBoundingClientRect().width;
+      const { min, max } = splitRange();
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') setStageSize(now - step);
+      else if (e.key === 'ArrowDown' || e.key === 'PageDown') setStageSize(now + step);
+      else if (e.key === 'Home') setStageSize(min);
+      else if (e.key === 'End') setStageSize(max);
+      else return;
+      e.preventDefault();
+    });
+
+    const apply = () => {
+      if (!canSplit()) { els.workspace.style.removeProperty('--stage-size'); return; }
+      let saved = null;
+      try { saved = Number(localStorage.getItem(SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
+      if (saved) setStageSize(saved, { save: false });
+      else setStageSize(defaultStageSize(), { save: false });
+    };
+    apply();
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', () => setTimeout(apply, 120));
+  }
+
   function setZoom(on) {
     els.stage.classList.toggle('zoomed', on);
     els.backdrop.hidden = !on;
@@ -1235,6 +1479,171 @@
     if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 2000 }); else setTimeout(run, 500);
   }
 
+  /* ---------------------------------------------------------------
+     Suggestions: names and words visitors give a portrait.
+
+     TEST VERSION — everything is kept in this browser only, so a visitor
+     sees their own suggestions and nobody else's. To make the list shared,
+     replace the two functions in `store` with calls to a database
+     (Supabase, a small Vercel function, …). Nothing else needs to change.
+     --------------------------------------------------------------- */
+  const SUGGEST_KEY = 'controverse:suggestions:v1';
+  const MAX_WORDS = 8;
+
+  const store = {
+    async list() {
+      try { return JSON.parse(localStorage.getItem(SUGGEST_KEY)) || []; } catch { return []; }
+    },
+    async add(entry) {
+      const all = await store.list();
+      all.unshift(entry);
+      try { localStorage.setItem(SUGGEST_KEY, JSON.stringify(all.slice(0, 500))); } catch { /* storage unavailable */ }
+      return entry;
+    },
+  };
+
+  let draftWords = [];
+
+  function compositionHash() {
+    const params = new URLSearchParams();
+    for (const c of CATEGORIES) if (state.sel[c.key]) params.set(c.folder, state.sel[c.key].file);
+    params.set('bg', state.bg);
+    return params.toString();
+  }
+
+  function renderDraftWords() {
+    els.suggestWords.textContent = '';
+    draftWords.forEach((w, i) => {
+      const li = document.createElement('li');
+      li.append(w);
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.setAttribute('aria-label', `Remove ${w}`);
+      x.textContent = '\u00d7';
+      x.addEventListener('click', () => { draftWords.splice(i, 1); renderDraftWords(); });
+      li.appendChild(x);
+      els.suggestWords.appendChild(li);
+    });
+  }
+
+  function addWord() {
+    const raw = els.suggestWord.value.trim().replace(/\s+/g, ' ');
+    els.suggestError.textContent = '';
+    if (!raw) return;
+    if (/\s/.test(raw)) { els.suggestError.textContent = 'One word at a time, please.'; return; }
+    if (draftWords.length >= MAX_WORDS) { els.suggestError.textContent = `That is the limit of ${MAX_WORDS} words.`; return; }
+    if (draftWords.some((w) => w.toLowerCase() === raw.toLowerCase())) { els.suggestError.textContent = 'You already added that word.'; return; }
+    draftWords.push(raw);
+    els.suggestWord.value = '';
+    renderDraftWords();
+    els.suggestWord.focus();
+  }
+
+  const timeAgo = (iso) => {
+    const mins = Math.round((Date.now() - new Date(iso)) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins} min ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return `${hrs} h ago`;
+    return new Date(iso).toLocaleDateString();
+  };
+
+  async function renderSuggestions() {
+    const all = await store.list();
+    const here = compositionHash();
+    els.suggestCount.textContent = all.length ? `(${all.length})` : '';
+    els.suggestList.textContent = '';
+    if (!all.length) {
+      const li = document.createElement('li');
+      li.className = 'suggest-empty';
+      li.textContent = 'No suggestions yet — yours would be the first.';
+      els.suggestList.appendChild(li);
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    for (const entry of all) {
+      const li = document.createElement('li');
+      li.className = 'suggest-card' + (entry.hash === here ? ' mine' : '');
+      const head = document.createElement('div');
+      head.className = 'suggest-card-head';
+      const h3 = document.createElement('h3');
+      h3.textContent = entry.name || 'Unnamed';
+      const t = document.createElement('time');
+      t.dateTime = entry.at;
+      t.textContent = timeAgo(entry.at);
+      head.append(h3, t);
+      li.appendChild(head);
+      if (entry.words && entry.words.length) {
+        const words = document.createElement('div');
+        words.className = 'words';
+        for (const w of entry.words) {
+          const span = document.createElement('span');
+          span.textContent = w;
+          words.appendChild(span);
+        }
+        li.appendChild(words);
+      }
+      if (entry.hash && entry.hash !== here) {
+        const open = document.createElement('button');
+        open.type = 'button';
+        open.className = 'open-link';
+        open.textContent = 'Open that portrait';
+        open.addEventListener('click', () => {
+          closeSuggest();
+          location.hash = '#' + entry.hash;
+        });
+        li.appendChild(open);
+      }
+      frag.appendChild(li);
+    }
+    els.suggestList.appendChild(frag);
+  }
+
+  async function submitSuggestion(e) {
+    e.preventDefault();
+    if (els.suggestWord.value.trim()) addWord();
+    const name = els.suggestName.value.trim();
+    els.suggestError.textContent = '';
+    if (!name && !draftWords.length) {
+      els.suggestError.textContent = 'Add a name or at least one word.';
+      els.suggestName.focus();
+      return;
+    }
+    await store.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, name, words: [...draftWords], hash: compositionHash(), at: new Date().toISOString() });
+    els.suggestName.value = '';
+    draftWords = [];
+    renderDraftWords();
+    renderSuggestions();
+    els.suggestError.textContent = '';
+  }
+
+  async function openSuggest() {
+    if (els.stage.classList.contains('zoomed')) return;
+    els.suggest.hidden = false;
+    els.main.hidden = true;
+    els.suggest.scrollTop = 0;
+    setHash('#' + compositionHash() + '&view=name');
+    renderDraftWords();
+    renderSuggestions();
+    try {
+      const blob = await renderImage();
+      if (els.suggestImage.dataset.url) URL.revokeObjectURL(els.suggestImage.dataset.url);
+      const url = URL.createObjectURL(blob);
+      els.suggestImage.dataset.url = url;
+      els.suggestImage.src = url;
+    } catch (err) {
+      console.warn('Could not draw the portrait for the naming page:', err);
+    }
+    els.suggestName.focus();
+  }
+
+  function closeSuggest() {
+    if (els.suggest.hidden) return;
+    els.suggest.hidden = true;
+    els.main.hidden = false;
+    writeUrl();
+  }
+
   // ---------- shareable link (URL hash) ----------
   // Some previews (sandboxed frames) forbid changing the address; never let that stop the app.
   function setHash(hash) {
@@ -1245,7 +1654,7 @@
     const params = new URLSearchParams();
     for (const c of CATEGORIES) if (state.sel[c.key]) params.set(c.folder, state.sel[c.key].file);
     params.set('bg', state.bg);
-    const hash = '#' + params.toString();
+    const hash = '#' + params.toString() + (els.suggest && !els.suggest.hidden ? '&view=name' : '');
     if (location.hash !== hash) setHash(hash);
   }
 
@@ -1545,6 +1954,14 @@
     els.shuffleOne.addEventListener('click', shuffleOne);
     els.infoButton.addEventListener('click', () => setInfo(els.infoPanel.hidden));
     els.zoomButton.addEventListener('click', () => setZoom(!els.stage.classList.contains('zoomed')));
+    els.stage.addEventListener('click', (e) => { if (!e.target.closest('.stage-btn')) openSuggest(); });
+    els.suggestBack.addEventListener('click', closeSuggest);
+    els.suggestAdd.addEventListener('click', addWord);
+    els.suggestWord.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addWord(); }
+    });
+    els.suggestForm.addEventListener('submit', submitSuggestion);
+    bindSplit();
     els.backdrop.addEventListener('click', () => setZoom(false));
 
     // the colour tab only exists on a phone, so rebuild when the layout changes
@@ -1565,9 +1982,14 @@
     document.addEventListener('keydown', (e) => {
       if (isTyping(e) || e.metaKey || e.ctrlKey || e.altKey || els.modal.open) return;
       if (e.key === 'Escape' && els.stage.classList.contains('zoomed')) { setZoom(false); return; }
+      if (e.key === 'Escape' && !els.suggest.hidden) { closeSuggest(); return; }
       if (e.key === '/') { e.preventDefault(); els.search.focus(); }
       else if (e.key.toLowerCase() === 's') { state.touched = true; shuffle(); }
     });
+
+    if (new URLSearchParams(initialHash.slice(1)).get('view') === 'name') {
+      setTimeout(openSuggest, 0);
+    }
 
     const cached = EMBEDDED ? null : readCache();
     const fresh = cached && Date.now() - cached.t < CACHE_TTL;
