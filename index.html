@@ -154,8 +154,53 @@
     transition: opacity .25s, transform .25s;
   }
   .stage-caption.show { opacity: 1; transform: none; }
+  .stage-tools {
+    position: absolute; right: 10px; top: 10px; z-index: 6;
+    display: flex; gap: 6px;
+  }
+  .stage-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(12, 12, 14, .55);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: #fff;
+    transition: background-color .15s;
+  }
+  .stage-btn:hover { background: rgba(12, 12, 14, .78); }
+  .stage-btn svg { width: 17px; height: 17px; }
+  .stage-btn[aria-expanded="true"], .stage-btn[aria-pressed="true"] { background: var(--accent); }
+  #zoom-button .ico-out { display: none; }
+  #display-box.zoomed #zoom-button .ico-in { display: none; }
+  #display-box.zoomed #zoom-button .ico-out { display: block; }
+
+  /* The list of parts, over the portrait */
+  .info-panel {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 7;
+    max-height: 78%; overflow-y: auto;
+    padding: 14px 16px 16px;
+    background: linear-gradient(to top, rgba(10, 10, 12, .93) 70%, rgba(10, 10, 12, 0));
+    color: #fff;
+    animation: info-in .2s ease;
+  }
+  @keyframes info-in { from { opacity: 0; transform: translateY(8px); } }
+  .info-panel h3 {
+    margin: 0 0 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(255, 255, 255, .55);
+  }
+  .info-panel dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: baseline; }
+  .info-panel dt { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: rgba(255, 255, 255, .55); white-space: nowrap; }
+  .info-panel dd { margin: 0; font-size: 13px; font-weight: 600; }
+  .info-panel dd.none { font-weight: 400; color: rgba(255, 255, 255, .45); }
+  .info-panel .swatch-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: baseline; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+
+  .stage-backdrop {
+    position: fixed; inset: 0; z-index: 110;
+    background: rgba(0, 0, 0, .86);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+
   .stage-toggle {
-    position: absolute; right: 10px; bottom: 10px; z-index: 6;
     display: none;
     width: 34px; height: 34px; border-radius: 50%;
     background: rgba(12, 12, 14, .55);
@@ -394,6 +439,21 @@
     .stage-toggle { display: none; }
   }
 
+  /* Enlarged portrait — an id selector so it wins over the layout rules above */
+  #display-box.zoomed {
+    position: fixed; z-index: 120;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(94vw, 94vh, 1200px);
+    width: min(94vw, 94dvh, 1200px);
+    height: auto;
+    max-width: none;
+    border-radius: 18px;
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .9);
+  }
+  #display-box.zoomed .stage-toggle { display: none; }
+  #display-box.zoomed .stage-tools { right: 12px; top: 12px; }
+
   /* ---------- Share dialog ---------- */
   dialog {
     width: min(92vw, 420px);
@@ -462,11 +522,26 @@
   </div>
 </header>
 
+<div id="stage-backdrop" class="stage-backdrop" hidden></div>
+
 <main class="workspace">
   <section class="stage-col" aria-label="Portrait">
     <div id="display-box" class="stage" role="img" aria-label="Portrait preview">
       <div id="layers"></div>
       <div class="loader" aria-hidden="true"></div>
+      <div class="stage-tools">
+        <button id="info-button" class="stage-btn" type="button" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg>
+        </button>
+        <button id="zoom-button" class="stage-btn" type="button" aria-label="Enlarge the portrait" aria-pressed="false">
+          <svg class="ico-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v5"/><path d="M4 4l6 6"/><path d="M15 20h5v-5"/><path d="M20 20l-6-6"/></svg>
+          <svg class="ico-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h5V4"/><path d="M10 10 4 4"/><path d="M20 15h-5v5"/><path d="m14 14 6 6"/></svg>
+        </button>
+      </div>
+      <div id="info-panel" class="info-panel" hidden>
+        <h3>Parts in this portrait</h3>
+        <dl id="info-list"></dl>
+      </div>
       <div id="stage-caption" class="stage-caption" aria-hidden="true"></div>
       <button id="stage-toggle" class="stage-toggle" type="button" aria-label="Shrink the portrait" aria-expanded="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>
@@ -547,13 +622,12 @@
     { key: 'nose',      label: 'Nose',       folder: 'nose',       crop: { x: .70, y: .37, size: .36 } },
     { key: 'lowerFace', label: 'Lower face', folder: 'lowerface',  crop: { x: .50, y: .74, size: .52 } },
     { key: 'outfit',    label: 'Outfit',     folder: 'outfit',     crop: { x: .50, y: .76, size: .48 } },
-    { key: 'headgear',  label: 'Headgear',   folder: 'headgear',   crop: { x: .50, y: .22, size: .54 }, optional: true },
     { key: 'eyewear',   label: 'Eyewear',    folder: 'eyewear',    crop: { x: .50, y: .37, size: .50 }, optional: true },
     { key: 'props',     label: 'Props',      folder: 'props',      crop: { x: .50, y: .50, size: 1 }, optional: true },
   ];
 
   // Stacking order of the picture, bottom → top. 'shade' is the fixed shading overlay.
-  const LAYER_ORDER = ['lowerFace', 'upperFace', 'shade', 'hair', 'nose', 'eyewear', 'headgear', 'outfit', 'props'];
+  const LAYER_ORDER = ['lowerFace', 'upperFace', 'shade', 'hair', 'nose', 'eyewear', 'outfit', 'props'];
   // Preview edition only: images packed into the file (null on the live site).
   const EMBEDDED = null;
   const SHADE_URL = EMBEDDED ? EMBEDDED['shade/Shade.png'] : RAW_BASE + 'shade/Shade.png';
@@ -690,7 +764,9 @@
   const els = {
     stage: $('display-box'), layers: $('layers'), caption: $('stage-caption'),
     swatches: $('swatches'), bgName: $('bg-name'),
-    tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'), stageToggle: $('stage-toggle'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
+    tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'), stageToggle: $('stage-toggle'),
+    infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
+    zoomButton: $('zoom-button'), backdrop: $('stage-backdrop'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
     search: $('search-input'), suggestions: $('search-suggestions'),
     shuffle: $('shuffle-button'), share: $('share-button'),
     modal: $('share-modal'), close: $('close-share-modal'), preview: $('share-preview'),
@@ -924,6 +1000,50 @@
     update();
   }
 
+  // The info panel: which part each feature came from.
+  function renderInfo() {
+    if (els.infoPanel.hidden) return;
+    const frag = document.createDocumentFragment();
+    const row = (label, value, extra) => {
+      const dt = document.createElement('dt');
+      dt.textContent = label;
+      const dd = document.createElement('dd');
+      if (extra) dd.appendChild(extra);
+      dd.append(value || 'None');
+      if (!value) dd.classList.add('none');
+      frag.append(dt, dd);
+    };
+    for (const c of CATEGORIES) {
+      if (!state.traits[c.key] || !state.traits[c.key].length) continue;
+      row(c.label, state.sel[c.key] ? state.sel[c.key].name : '');
+    }
+    const bg = bgByName.get(state.bg) || BACKGROUNDS[0];
+    const dot = document.createElement('span');
+    dot.className = 'swatch-dot';
+    dot.style.background = bg.color;
+    row('Background', bg.name, dot);
+    els.infoList.textContent = '';
+    els.infoList.appendChild(frag);
+  }
+
+  function setInfo(on) {
+    els.infoPanel.hidden = !on;
+    els.infoButton.setAttribute('aria-expanded', String(on));
+    els.infoButton.setAttribute('aria-label', on ? 'Hide the names of the parts used' : 'Show the names of the parts used');
+    if (on) {
+      if (els.workspace.classList.contains('compact')) setCompact(false);
+      renderInfo();
+    }
+  }
+
+  function setZoom(on) {
+    els.stage.classList.toggle('zoomed', on);
+    els.backdrop.hidden = !on;
+    els.zoomButton.setAttribute('aria-pressed', String(on));
+    els.zoomButton.setAttribute('aria-label', on ? 'Back to the normal size' : 'Enlarge the portrait');
+    document.body.style.overflow = on ? 'hidden' : '';
+  }
+
   function setCompact(on) {
     els.workspace.classList.toggle('compact', on);
     els.stageToggle.setAttribute('aria-expanded', String(!on));
@@ -1088,6 +1208,7 @@
 
   function update() {
     renderStage();
+    renderInfo();
     updateCaption();
     syncTabs();
     syncGrid();
@@ -1446,6 +1567,9 @@
     els.shuffle.addEventListener('click', () => { state.touched = true; shuffle(); });
     els.shuffleOne.addEventListener('click', shuffleOne);
     els.stageToggle.addEventListener('click', () => setCompact(!els.workspace.classList.contains('compact')));
+    els.infoButton.addEventListener('click', () => setInfo(els.infoPanel.hidden));
+    els.zoomButton.addEventListener('click', () => setZoom(!els.stage.classList.contains('zoomed')));
+    els.backdrop.addEventListener('click', () => setZoom(false));
     try { if (localStorage.getItem(COMPACT_KEY) === '1') setCompact(true); } catch { /* storage unavailable */ }
 
     // the colour tab only exists on a phone, so rebuild when the layout changes
@@ -1465,6 +1589,7 @@
     window.addEventListener('hashchange', () => { if (readUrl()) { syncSwatches(true); update(); } });
     document.addEventListener('keydown', (e) => {
       if (isTyping(e) || e.metaKey || e.ctrlKey || e.altKey || els.modal.open) return;
+      if (e.key === 'Escape' && els.stage.classList.contains('zoomed')) { setZoom(false); return; }
       if (e.key === '/') { e.preventDefault(); els.search.focus(); }
       else if (e.key.toLowerCase() === 's') { state.touched = true; shuffle(); }
     });
