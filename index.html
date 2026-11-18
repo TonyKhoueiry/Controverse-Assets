@@ -29,6 +29,8 @@
     --r-sm: 10px;
     --r-md: 14px;
     --r-lg: 22px;
+    --canvas-ratio: 1 / 1;       /* square */
+    --canvas-tall: 1;            /* the same number, for the maths in the script */
     --header-h: 60px;
     --gap: 20px;
     --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 24px 48px -24px rgba(0,0,0,.7);
@@ -76,35 +78,35 @@
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   .top-actions { display: flex; gap: 8px; }
 
+  /* One button system: same height, radius, icon size and stroke weight.
+     Ghost = secondary (Shuffle, Share), filled accent = primary (Order). */
   .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    height: 36px; padding: 0 14px;
-    border-radius: 999px;
-    font-size: 13px; font-weight: 600; letter-spacing: -.005em;
-    transition: background-color .15s, transform .1s, color .15s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 38px; padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13.5px; font-weight: 600; letter-spacing: -.005em;
+    text-decoration: none;
+    transition: background-color .15s, box-shadow .15s, transform .08s, color .15s;
     white-space: nowrap;
   }
-  .btn:active { transform: scale(.97); }
-  .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .btn-ghost { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
-  .btn-ghost:hover { background: var(--hover); }
-  .btn-order {
-    background: transparent; color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
-    text-decoration: none;
+  .btn:active { transform: translateY(1px); }
+  .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .btn-ghost {
+    background: var(--raised); color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--line);
   }
-  .btn-order:hover { background: var(--accent-soft); }
-  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-ghost:hover { background: var(--hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); }
   .btn-primary:hover { background: var(--accent-hover); }
   @media (max-width: 620px) {
     .brand small { display: none; }
     .logo-full { display: none; }
     .logo-mark { display: block; }
   }
-  @media (max-width: 480px) {
-    .top-actions .btn-label { display: none; }
-    .top-actions .btn { width: 36px; padding: 0; }
-    .top-actions .btn-order { width: auto; padding: 0 12px; }
+  @media (max-width: 560px) {
+    /* the two secondary actions become icons; Order keeps its word */
+    .top-actions .btn-ghost .btn-label { display: none; }
+    .top-actions .btn-ghost { width: 38px; padding: 0; }
   }
 
   /* ---------- Workspace ---------- */
@@ -123,8 +125,8 @@
     .workspace {
       --gap: 24px;
       min-height: 0;
-      --stage: min(calc(100dvh - var(--header-h) - 2 * var(--gap) - 92px), calc(100vw - 480px - 3 * var(--gap)), 860px);
-      grid-template-columns: var(--stage) minmax(380px, 1fr);
+      --stage: min(calc(100dvh - var(--header-h) - 2 * var(--gap) - 92px), calc(100vw - 480px - 3 * var(--gap)), 760px);
+      grid-template-columns: var(--stage-size, var(--stage)) minmax(360px, 1fr);
       padding-left: var(--gap); padding-right: var(--gap);
     }
   }
@@ -133,9 +135,10 @@
   .stage-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
   .stage {
     position: relative;
+    container-type: inline-size;
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--canvas-ratio);
     border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--stage-bg);
@@ -146,11 +149,12 @@
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: contain;
+    object-position: center bottom;
     pointer-events: none; user-select: none;
   }
   .stage-caption {
     position: absolute; left: 12px; bottom: 12px; z-index: 5;
-    max-width: calc(100% - 68px);
+    max-width: calc(100% - 78px);
     padding: 6px 12px;
     border-radius: 999px;
     background: rgba(12, 12, 14, .55);
@@ -162,30 +166,32 @@
   }
   .stage-caption.show { opacity: 1; transform: none; }
   .stage-btn {
-    width: 24px; height: 24px; border-radius: 50%;
+    /* the canvas is the container, so the buttons grow and shrink with it */
+    width: 29px; height: 29px; border-radius: 8px;
+    width: clamp(24px, 8.5cqw, 46px); height: clamp(24px, 8.5cqw, 46px);
+    border-radius: clamp(7px, 2.4cqw, 13px);
     display: grid; place-items: center;
     background: rgba(12, 12, 14, .55);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     color: #fff;
-    transition: background-color .15s;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+    transition: background-color .15s, transform .1s;
   }
-  .stage-btn { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); }
   .stage-btn:hover { background: rgba(12, 12, 14, .78); }
-  .stage-btn svg { width: 12px; height: 12px; }
+  .stage-btn:active { transform: scale(.94); }
+  .stage-btn svg { width: 54%; height: 54%; }
+  .stage-row { display: flex; justify-content: center; width: 100%; }
   .stage-tools {
-    position: absolute; right: 10px; top: 10px; z-index: 6;
-    display: flex; flex-direction: column; gap: 6px;
+    position: absolute; z-index: 6;
+    bottom: clamp(7px, 2.6cqw, 16px); right: clamp(7px, 2.6cqw, 16px);
   }
-  .stage-btn[aria-expanded="true"], .stage-btn[aria-pressed="true"] { background: var(--accent); }
-  #zoom-button .ico-out { display: none; }
-  #display-box.zoomed #zoom-button .ico-in { display: none; }
-  #display-box.zoomed #zoom-button .ico-out { display: block; }
+  .stage-btn[aria-expanded="true"] { box-shadow: 0 0 0 2px rgba(255, 255, 255, .9), 0 1px 3px rgba(0, 0, 0, .3); }
 
   /* The list of parts, over the portrait */
   .info-panel {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
     max-height: 78%; overflow-y: auto;
-    padding: 14px 48px 16px 16px;
+    padding: 14px 16px 52px 16px;
     background: linear-gradient(to top, rgba(10, 10, 12, .93) 70%, rgba(10, 10, 12, 0));
     color: #fff;
     animation: info-in .2s ease;
@@ -201,12 +207,6 @@
   .info-panel dd { margin: 0; font-size: 13px; font-weight: 600; }
   .info-panel dd.none { font-weight: 400; color: rgba(255, 255, 255, .45); }
   .info-panel .swatch-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: baseline; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
-
-  .stage-backdrop {
-    position: fixed; inset: 0; z-index: 110;
-    background: rgba(0, 0, 0, .86);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  }
 
   .loader {
     position: absolute; left: 50%; top: 50%; margin: -9px 0 0 -9px; z-index: 5;
@@ -404,13 +404,13 @@
     }
     .stage-col { align-items: center; flex-shrink: 0; gap: 8px; }
     .stage {
-      width: min(100%, 34vh);
-      width: var(--stage-size, min(100%, 34dvh));
+      width: min(100%, 29vh);
+      width: var(--stage-size, min(100%, 29dvh));
       --r-lg: 16px;
       transition: background-color .35s ease;
     }
     .stage.snapping { transition: width .18s ease, background-color .35s ease; }
-    .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 60px); }
+    .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 64px); }
     /* the background colours get their own tab, so the swatch bar is not needed here */
     .swatch-bar { display: none; }
     .inspector { flex: 1; --r-lg: 16px; }
@@ -427,50 +427,36 @@
     .tile-img { border-radius: 12px; }
     .tile-name { font-size: 11px; }
   }
-  @media (max-width: 959px) and (orientation: landscape) {
-    /* lying down: portrait on the left, picker on the right */
-    .workspace { flex-direction: row; align-items: stretch; max-width: none; }
-    .stage-col { justify-content: center; }
-    .stage { width: auto; height: 100%; max-width: 46vw; aspect-ratio: 1 / 1; }
-  }
-
-  /* Enlarged portrait — an id selector so it wins over the layout rules above */
-  #display-box.zoomed {
-    position: fixed; z-index: 120;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(94vw, 94vh, 1200px);
-    width: min(94vw, 94dvh, 1200px);
-    height: auto;
-    max-width: none;
-    border-radius: 18px;
-    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .9);
-  }
-  #display-box.zoomed .stage-tools { right: 14px; top: 14px; }
 
   /* Drag bar between the portrait and the picker (phones, upright) */
-  .split-handle { display: none; }
-  @media (max-width: 959px) and (orientation: portrait) {
-    .split-handle {
-      display: flex; align-items: center; justify-content: center;
-      height: 22px; flex-shrink: 0;
-      cursor: row-resize;
-      touch-action: none;
-      -webkit-user-select: none; user-select: none;
-    }
-    .split-handle span {
-      width: 44px; height: 4px; border-radius: 2px;
-      background: var(--line-strong);
-      transition: background-color .15s, width .15s;
-    }
-    .split-handle:hover span, .split-handle.dragging span { width: 60px; background: var(--accent); }
-    .split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 8px; }
+  .split-handle {
+    display: flex; align-items: center; justify-content: center;
+    height: 22px; flex-shrink: 0;
+    cursor: row-resize;
+    touch-action: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .split-handle span {
+    width: 52px; height: 4px; border-radius: 2px;
+    background: var(--line-strong);
+    transition: background-color .15s, width .15s, height .15s;
+  }
+  .split-handle:hover span, .split-handle.dragging span { width: 68px; background: var(--accent); }
+  /* on a touch screen the bar keeps its slim look but gets a tall, easy target */
+  @media (pointer: coarse) {
+    .split-handle { height: 40px; margin: -9px 0 -7px; }
+    .split-handle span { width: 64px; height: 5px; border-radius: 3px; }
+    .split-handle.dragging span { height: 6px; }
+  }
+  .split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 8px; }
+  @media (max-width: 959px) {
     .inspector-head { padding-top: 2px; }
   }
 
   /* ---------- Name this portrait ---------- */
   #display-box { cursor: pointer; }
-  #display-box.zoomed { cursor: default; }
 
   .suggest {
     flex: 1;
@@ -483,7 +469,7 @@
   @media (max-width: 720px) { .suggest-top { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
   .suggest-figure { margin: 0; }
   .suggest-figure img {
-    display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+    display: block; width: 100%; aspect-ratio: var(--canvas-ratio); object-fit: contain; object-position: center bottom;
     border-radius: var(--r-lg); background: var(--stage-bg);
   }
   .suggest-form { display: flex; flex-direction: column; gap: 10px; }
@@ -564,7 +550,7 @@
   .close { width: 30px; height: 30px; border-radius: 50%; background: var(--raised); color: var(--muted); display: grid; place-items: center; flex-shrink: 0; }
   .close:hover { background: var(--hover); color: var(--text); }
   .close svg { width: 14px; height: 14px; }
-  #share-preview { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-md); background: var(--raised); margin-bottom: 16px; }
+  #share-preview { display: block; width: min(100%, 250px); margin-inline: auto; aspect-ratio: var(--canvas-ratio); object-fit: contain; object-position: center bottom; border-radius: var(--r-md); background: var(--raised); margin-bottom: 16px; }
   .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .share-btn {
     display: flex; align-items: center; gap: 10px;
@@ -600,26 +586,27 @@
     <small>Don't Mix Your Drinks</small>
   </div>
   <div class="top-actions">
-    <a id="order-button" class="btn btn-order" href="#" aria-label="Order a print (link coming soon)">Order</a>
+    <button id="shuffle-button" class="btn btn-ghost" type="button" title="Shuffle (S)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3.5h4.5V8"/><path d="M3.5 20.5 20.5 3.5"/><path d="M20.5 16v4.5H16"/><path d="m14.5 14.5 6 6"/><path d="m3.5 3.5 6 6"/></svg><span class="btn-label">Shuffle</span>
+    </button>
+    <button id="share-button" class="btn btn-ghost" type="button" title="Share this portrait">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="m8 7.5 4-4 4 4"/><path d="M5.5 13.5v5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-5"/></svg><span class="btn-label">Share</span>
+    </button>
+    <a id="order-button" class="btn btn-primary" href="#" title="Order a print">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 7.5h13l-1 12.5a1.5 1.5 0 0 1-1.5 1.4H8a1.5 1.5 0 0 1-1.5-1.4Z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg><span class="btn-label">Order</span>
+    </a>
   </div>
 </header>
 
-<div id="stage-backdrop" class="stage-backdrop" hidden></div>
-
 <main class="workspace">
   <section class="stage-col" aria-label="Portrait">
+    <div class="stage-row">
     <div id="display-box" class="stage" role="img" aria-label="Portrait preview">
       <div id="layers"></div>
       <div class="loader" aria-hidden="true"></div>
       <div class="stage-tools">
-      <button id="shuffle-button" class="stage-btn" type="button" title="Shuffle (S)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg></button>
-      <button id="info-button" class="stage-btn" type="button" title="Parts used" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg>
-      </button>
-      <button id="share-button" class="stage-btn" type="button" title="Share" aria-label="Share this portrait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
-      <button id="zoom-button" class="stage-btn" type="button" aria-label="Enlarge the portrait" aria-pressed="false">
-          <svg class="ico-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v5"/><path d="M4 4l6 6"/><path d="M15 20h5v-5"/><path d="M20 20l-6-6"/></svg>
-        <svg class="ico-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h5V4"/><path d="M10 10 4 4"/><path d="M20 15h-5v5"/><path d="m14 14 6 6"/></svg>
+      <button id="info-button" class="stage-btn btn-info" type="button" title="Parts used" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg>
       </button>
       </div>
       <div id="info-panel" class="info-panel" hidden>
@@ -627,6 +614,7 @@
         <dl id="info-list"></dl>
       </div>
       <div id="stage-caption" class="stage-caption" aria-hidden="true"></div>
+    </div>
     </div>
     <div class="swatch-bar">
       <div class="swatch-label"><span>Background</span><strong id="bg-name">Bone</strong></div>
@@ -877,7 +865,8 @@
 
   const CACHE_KEY = 'controverse:tree:v1';
   const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
-  const EXPORT_SIZE = 1600;
+  const EXPORT_W = 1600;
+  const EXPORT_H = 1600;
 
   /* =====================================================================
      APP
@@ -888,9 +877,10 @@
     stage: $('display-box'), layers: $('layers'), caption: $('stage-caption'),
     swatches: $('swatches'), bgName: $('bg-name'),
     tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'),     infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
-    zoomButton: $('zoom-button'), backdrop: $('stage-backdrop'),
     main: document.querySelector('main.workspace'),
-    splitHandle: $('split-handle'),
+    splitHandles: [$('split-handle')],
+    stageCol: document.querySelector('.stage-col'),
+    swatchBar: document.querySelector('.swatch-bar'),
     suggest: $('suggest-view'), suggestBack: $('suggest-back'), suggestImage: $('suggest-image'),
     suggestForm: $('suggest-form'), suggestName: $('suggest-name'), suggestWord: $('suggest-word'),
     suggestAdd: $('suggest-add'), suggestWords: $('suggest-words'), suggestError: $('suggest-error'),
@@ -1165,30 +1155,48 @@
      left, so the gallery grows as the portrait shrinks.
      --------------------------------------------------------------- */
   const SPLIT_KEY = 'controverse:split';
-  const SPLIT_MIN = 132;   // keeps the column of buttons inside the portrait
+  const SPLIT_MIN = 96;    // the narrowest the canvas may get (its width)
+  const TALL = 1;          // square: height = width
   const PICKER_MIN = 240;
 
-  const canSplit = () => window.matchMedia('(max-width: 959px) and (orientation: portrait)').matches;
+  const isWide = () => window.matchMedia('(min-width: 960px)').matches;
+  const canSplit = () => true;   // both layouts have a bar now
 
   function splitRange() {
     const box = els.workspace.getBoundingClientRect();
-    const max = Math.max(SPLIT_MIN + 40, Math.min(box.width, box.height - PICKER_MIN));
+    if (isWide()) {
+      const cs = getComputedStyle(els.workspace);
+      const gap = parseFloat(cs.columnGap) || 24;
+      const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      // whatever the column holds besides the canvas: the colours and the bar.
+      // Measured from those elements, because the column itself is stretched to full height.
+      const rows = parseFloat(getComputedStyle(els.stageCol).rowGap) || 14;
+      const extra = (els.swatchBar ? els.swatchBar.offsetHeight : 0) + rows;
+      const byWidth = box.width - 360 - gap;          // the picker keeps its minimum
+      const byHeight = (box.height - padY - extra) / TALL;
+      return { min: 200, max: Math.max(240, Math.min(byWidth, byHeight)) };
+    }
+    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width, (box.height - PICKER_MIN) / TALL));
     return { min: SPLIT_MIN, max };
   }
 
   function defaultStageSize() {
     const box = els.workspace.getBoundingClientRect();
-    return Math.min(box.width, window.innerHeight * 0.34);
+    const { min, max } = splitRange();
+    const wish = isWide() ? max : (window.innerHeight * 0.44) / TALL;
+    return Math.min(max, Math.max(min, wish));
   }
 
   function setStageSize(px, { save = true } = {}) {
     const { min, max } = splitRange();
     const size = Math.round(Math.min(max, Math.max(min, px)));
     els.workspace.style.setProperty('--stage-size', `${size}px`);
-    els.splitHandle.setAttribute('aria-valuenow', String(size));
-    els.splitHandle.setAttribute('aria-valuemin', String(min));
-    els.splitHandle.setAttribute('aria-valuemax', String(max));
-    if (save) { try { localStorage.setItem(SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
+    for (const h of els.splitHandles) {
+      h.setAttribute('aria-valuenow', String(size));
+      h.setAttribute('aria-valuemin', String(min));
+      h.setAttribute('aria-valuemax', String(max));
+    }
+    if (save) { try { localStorage.setItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
     return size;
   }
 
@@ -1202,7 +1210,19 @@
   }
 
   function bindSplit() {
-    const handle = els.splitHandle;
+    for (const handle of els.splitHandles) bindHandle(handle);
+    applySplit();
+    window.addEventListener('resize', applySplit);
+    window.addEventListener('orientationchange', () => setTimeout(applySplit, 120));
+  }
+
+  function applySplit() {
+    let saved = null;
+    try { saved = Number(localStorage.getItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
+    setStageSize(saved || defaultStageSize(), { save: false });
+  }
+
+  function bindHandle(handle) {
     let start = null;
 
     handle.addEventListener('pointerdown', (e) => {
@@ -1215,7 +1235,7 @@
 
     handle.addEventListener('pointermove', (e) => {
       if (!start) return;
-      const next = start.size + (e.clientY - start.y);
+      const next = start.size + (e.clientY - start.y) / TALL;
       if (Math.abs(e.clientY - start.y) > 2) start.moved = true;
       setStageSize(next, { save: false });
     });
@@ -1228,6 +1248,27 @@
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
+
+    // Some mobile browsers are unreliable with pointer events on a small bar,
+    // so plain touch events do the same job as a backup.
+    handle.addEventListener('touchstart', (e) => {
+      if (start) return;
+      const t = e.touches[0];
+      start = { y: t.clientY, size: els.stage.getBoundingClientRect().width, moved: false, touch: true };
+      handle.classList.add('dragging');
+      e.preventDefault();
+    }, { passive: false });
+
+    handle.addEventListener('touchmove', (e) => {
+      if (!start || !start.touch) return;
+      const t = e.touches[0];
+      if (Math.abs(t.clientY - start.y) > 2) start.moved = true;
+      setStageSize(start.size + (t.clientY - start.y) / TALL, { save: false });
+      e.preventDefault();
+    }, { passive: false });
+
+    handle.addEventListener('touchend', end);
+    handle.addEventListener('touchcancel', end);
 
     // a double tap flips between the smallest portrait and the usual one
     handle.addEventListener('dblclick', () => {
@@ -1252,25 +1293,8 @@
       e.preventDefault();
     });
 
-    const apply = () => {
-      if (!canSplit()) { els.workspace.style.removeProperty('--stage-size'); return; }
-      let saved = null;
-      try { saved = Number(localStorage.getItem(SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
-      if (saved) setStageSize(saved, { save: false });
-      else setStageSize(defaultStageSize(), { save: false });
-    };
-    apply();
-    window.addEventListener('resize', apply);
-    window.addEventListener('orientationchange', () => setTimeout(apply, 120));
   }
 
-  function setZoom(on) {
-    els.stage.classList.toggle('zoomed', on);
-    els.backdrop.hidden = !on;
-    els.zoomButton.setAttribute('aria-pressed', String(on));
-    els.zoomButton.setAttribute('aria-label', on ? 'Back to the normal size' : 'Enlarge the portrait');
-    document.body.style.overflow = on ? 'hidden' : '';
-  }
 
   // ---------- tabs & grid ----------
   function buildTabs() {
@@ -1618,7 +1642,6 @@
   }
 
   async function openSuggest() {
-    if (els.stage.classList.contains('zoomed')) return;
     els.suggest.hidden = false;
     els.main.hidden = true;
     els.suggest.scrollTop = 0;
@@ -1800,11 +1823,12 @@
 
   async function renderImage() {
     const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = EXPORT_SIZE;
+    canvas.width = EXPORT_W;
+    canvas.height = EXPORT_H;
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingQuality = 'high';
     ctx.fillStyle = (bgByName.get(state.bg) || BACKGROUNDS[0]).color;
-    ctx.fillRect(0, 0, EXPORT_SIZE, EXPORT_SIZE);
+    ctx.fillRect(0, 0, EXPORT_W, EXPORT_H);
     for (const key of LAYER_ORDER) {
       const img = state.layers[key];
       if (img.hidden || !img.getAttribute('src')) continue;
@@ -1813,13 +1837,13 @@
       // so an SVG layer simply fills the frame; a PNG keeps its own proportions.
       const src = img.getAttribute('src') || '';
       const isSvg = /\.svg($|[?#])/i.test(src) || src.startsWith('data:image/svg');
-      const nw = isSvg ? EXPORT_SIZE : img.naturalWidth;
-      const nh = isSvg ? EXPORT_SIZE : img.naturalHeight;
+      const nw = isSvg ? 1 : img.naturalWidth;
+      const nh = isSvg ? 1 : img.naturalHeight;
       if (!nw || !nh) continue;
-      const scale = Math.min(EXPORT_SIZE / nw, EXPORT_SIZE / nh);
+      const scale = Math.min(EXPORT_W / nw, EXPORT_H / nh);
       const w = nw * scale, h = nh * scale;
       try {
-        ctx.drawImage(img, (EXPORT_SIZE - w) / 2, (EXPORT_SIZE - h) / 2, w, h);
+        ctx.drawImage(img, (EXPORT_W - w) / 2, EXPORT_H - h, w, h);
       } catch (err) {
         console.warn('Could not add layer to the export:', img.src, err);
       }
@@ -1953,7 +1977,6 @@
     els.shuffle.addEventListener('click', () => { state.touched = true; shuffle(); });
     els.shuffleOne.addEventListener('click', shuffleOne);
     els.infoButton.addEventListener('click', () => setInfo(els.infoPanel.hidden));
-    els.zoomButton.addEventListener('click', () => setZoom(!els.stage.classList.contains('zoomed')));
     els.stage.addEventListener('click', (e) => { if (!e.target.closest('.stage-btn')) openSuggest(); });
     els.suggestBack.addEventListener('click', closeSuggest);
     els.suggestAdd.addEventListener('click', addWord);
@@ -1962,7 +1985,6 @@
     });
     els.suggestForm.addEventListener('submit', submitSuggestion);
     bindSplit();
-    els.backdrop.addEventListener('click', () => setZoom(false));
 
     // the colour tab only exists on a phone, so rebuild when the layout changes
     let phone = isPhone();
@@ -1981,7 +2003,6 @@
     window.addEventListener('hashchange', () => { if (readUrl()) { syncSwatches(true); update(); } });
     document.addEventListener('keydown', (e) => {
       if (isTyping(e) || e.metaKey || e.ctrlKey || e.altKey || els.modal.open) return;
-      if (e.key === 'Escape' && els.stage.classList.contains('zoomed')) { setZoom(false); return; }
       if (e.key === 'Escape' && !els.suggest.hidden) { closeSuggest(); return; }
       if (e.key === '/') { e.preventDefault(); els.search.focus(); }
       else if (e.key.toLowerCase() === 's') { state.touched = true; shuffle(); }
