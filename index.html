@@ -114,7 +114,7 @@
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: var(--gap) calc(45px + max(16px, env(safe-area-inset-right))) calc(var(--gap) + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    padding: var(--gap) max(16px, env(safe-area-inset-right)) calc(var(--gap) + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     display: grid;
     gap: var(--gap);
     grid-template-columns: minmax(0, 1fr);
@@ -124,9 +124,9 @@
     .workspace {
       --gap: 24px;
       min-height: 0;
-      --stage: min(calc(100dvh - var(--header-h) - 2 * var(--gap) - 92px), calc(100vw - 480px - 3 * var(--gap) - 45px), 860px);
+      --stage: min(calc(100dvh - var(--header-h) - 2 * var(--gap) - 92px), calc(100vw - 480px - 3 * var(--gap)), 860px);
       grid-template-columns: var(--stage) minmax(380px, 1fr);
-      padding-left: var(--gap); padding-right: calc(var(--gap) + 45px);
+      padding-left: var(--gap); padding-right: var(--gap);
     }
   }
 
@@ -134,6 +134,7 @@
   .stage-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
   .stage {
     position: relative;
+    container-type: inline-size;
     width: 100%;
     max-width: 100%;
     aspect-ratio: 1 / 1;
@@ -151,7 +152,7 @@
   }
   .stage-caption {
     position: absolute; left: 12px; bottom: 12px; z-index: 5;
-    max-width: calc(100% - 24px);
+    max-width: calc(100% - 78px);
     padding: 6px 12px;
     border-radius: 999px;
     background: rgba(12, 12, 14, .55);
@@ -163,25 +164,25 @@
   }
   .stage-caption.show { opacity: 1; transform: none; }
   .stage-btn {
+    /* the canvas is the container, so the buttons grow and shrink with it */
     width: 29px; height: 29px; border-radius: 8px;
+    width: clamp(24px, 8.5cqw, 46px); height: clamp(24px, 8.5cqw, 46px);
+    border-radius: clamp(7px, 2.4cqw, 13px);
     display: grid; place-items: center;
-    color: #16161a;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(0, 0, 0, .12);
-    transition: filter .15s, transform .1s;
+    background: rgba(12, 12, 14, .55);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+    transition: background-color .15s, transform .1s;
   }
-  .stage-btn:hover { filter: brightness(1.08); }
+  .stage-btn:hover { background: rgba(12, 12, 14, .78); }
   .stage-btn:active { transform: scale(.94); }
-  .stage-btn svg { width: 15px; height: 15px; }
-  .btn-info { background: #f2c14e; }
-  .btn-shuffle { background: #4da3f0; }
-  .btn-share { background: #4cc08a; }
-  /* the canvas stays centred; the buttons line up with the Order button above them */
+  .stage-btn svg { width: 54%; height: 54%; }
   .stage-row { display: flex; justify-content: center; width: 100%; }
   .stage-tools {
-    position: fixed; z-index: 35;
-    top: calc(var(--header-h) + 14px + env(safe-area-inset-top, 0px));
-    right: max(16px, env(safe-area-inset-right));
-    display: flex; flex-direction: column; gap: 8px;
+    position: absolute; z-index: 6;
+    top: clamp(7px, 2.6cqw, 16px); right: clamp(7px, 2.6cqw, 16px);
+    display: flex; flex-direction: column; gap: clamp(5px, 1.8cqw, 11px);
   }
   .stage-btn[aria-expanded="true"] { box-shadow: 0 0 0 2px rgba(255, 255, 255, .9), 0 1px 3px rgba(0, 0, 0, .3); }
 
@@ -189,7 +190,7 @@
   .info-panel {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
     max-height: 78%; overflow-y: auto;
-    padding: 14px 16px 16px;
+    padding: 14px 56px 16px 16px;
     background: linear-gradient(to top, rgba(10, 10, 12, .93) 70%, rgba(10, 10, 12, 0));
     color: #fff;
     animation: info-in .2s ease;
@@ -404,7 +405,7 @@
       --gap: 10px;
       display: flex; flex-direction: column; min-height: 0; max-width: 620px;
       padding-left: max(10px, env(safe-area-inset-left));
-      padding-right: calc(45px + max(10px, env(safe-area-inset-right)));
+      padding-right: max(10px, env(safe-area-inset-right));
     }
     .stage-col { align-items: center; flex-shrink: 0; gap: 8px; }
     .stage {
@@ -414,7 +415,7 @@
       transition: background-color .35s ease;
     }
     .stage.snapping { transition: width .18s ease, background-color .35s ease; }
-    .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 20px); }
+    .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 64px); }
     /* the background colours get their own tab, so the swatch bar is not needed here */
     .swatch-bar { display: none; }
     .inspector { flex: 1; --r-lg: 16px; }
@@ -426,7 +427,7 @@
     .section-head { padding: 8px 10px 6px; }
     .section-head h2 { font-size: 14px; }
     .grid-wrap { padding: 0 10px 10px; }
-    .grid { grid-template-columns: repeat(auto-fill, minmax(66px, 1fr)); gap: 7px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
     .tile { gap: 4px; }
     .tile-img { border-radius: 12px; }
     .tile-name { font-size: 11px; }
@@ -478,7 +479,7 @@
   .suggest {
     flex: 1;
     overflow-y: auto;
-    padding: 24px calc(45px + max(16px, env(safe-area-inset-right))) calc(40px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    padding: 24px max(16px, env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   }
   .suggest-inner { width: 100%; max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
   .suggest-back { align-self: flex-start; }
@@ -615,18 +616,18 @@
     <div id="display-box" class="stage" role="img" aria-label="Portrait preview">
       <div id="layers"></div>
       <div class="loader" aria-hidden="true"></div>
-      <div id="info-panel" class="info-panel" hidden>
-        <h3>Parts in this portrait</h3>
-        <dl id="info-list"></dl>
-      </div>
-      <div id="stage-caption" class="stage-caption" aria-hidden="true"></div>
-    </div>
-    <div class="stage-tools">
+      <div class="stage-tools">
       <button id="info-button" class="stage-btn btn-info" type="button" title="Parts used" aria-label="Show the names of the parts used" aria-expanded="false" aria-controls="info-panel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg>
       </button>
       <button id="shuffle-button" class="stage-btn btn-shuffle" type="button" title="Shuffle (S)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg></button>
       <button id="share-button" class="stage-btn btn-share" type="button" title="Share" aria-label="Share this portrait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
+      </div>
+      <div id="info-panel" class="info-panel" hidden>
+        <h3>Parts in this portrait</h3>
+        <dl id="info-list"></dl>
+      </div>
+      <div id="stage-caption" class="stage-caption" aria-hidden="true"></div>
     </div>
     </div>
     <div class="swatch-bar">
