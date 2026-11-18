@@ -29,6 +29,8 @@
     --r-sm: 10px;
     --r-md: 14px;
     --r-lg: 22px;
+    --canvas-ratio: 3 / 4;       /* upright 4:3 */
+    --canvas-tall: 1.3333;       /* the same number, for the maths in the script */
     --header-h: 60px;
     --gap: 20px;
     --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 24px 48px -24px rgba(0,0,0,.7);
@@ -124,8 +126,8 @@
     .workspace {
       --gap: 24px;
       min-height: 0;
-      --stage: min(calc(100dvh - var(--header-h) - 2 * var(--gap) - 92px), calc(100vw - 480px - 3 * var(--gap)), 860px);
-      grid-template-columns: var(--stage) minmax(380px, 1fr);
+      --stage: min(calc((100dvh - var(--header-h) - 2 * var(--gap) - 92px) / 1.3333), calc(100vw - 480px - 3 * var(--gap)), 680px);
+      grid-template-columns: var(--stage-size, var(--stage)) minmax(360px, 1fr);
       padding-left: var(--gap); padding-right: var(--gap);
     }
   }
@@ -137,7 +139,7 @@
     container-type: inline-size;
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--canvas-ratio);
     border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--stage-bg);
@@ -148,6 +150,7 @@
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: contain;
+    object-position: center bottom;
     pointer-events: none; user-select: none;
   }
   .stage-caption {
@@ -409,8 +412,8 @@
     }
     .stage-col { align-items: center; flex-shrink: 0; gap: 8px; }
     .stage {
-      width: min(100%, 34vh);
-      width: var(--stage-size, min(100%, 34dvh));
+      width: min(100%, 29vh);
+      width: var(--stage-size, min(100%, 29dvh));
       --r-lg: 16px;
       transition: background-color .35s ease;
     }
@@ -432,12 +435,6 @@
     .tile-img { border-radius: 12px; }
     .tile-name { font-size: 11px; }
   }
-  @media (max-width: 959px) and (orientation: landscape) {
-    /* lying down: portrait on the left, picker on the right */
-    .workspace { flex-direction: row; align-items: stretch; max-width: none; }
-    .stage-col { justify-content: center; }
-    .stage { width: auto; height: 100%; max-width: 46vw; aspect-ratio: 1 / 1; }
-  }
 
   /* Enlarged portrait — an id selector so it wins over the layout rules above */
   #display-box.zoomed {
@@ -453,22 +450,21 @@
   }
 
   /* Drag bar between the portrait and the picker (phones, upright) */
-  .split-handle { display: none; }
-  @media (max-width: 959px) and (orientation: portrait) {
-    .split-handle {
-      display: flex; align-items: center; justify-content: center;
-      height: 22px; flex-shrink: 0;
-      cursor: row-resize;
-      touch-action: none;
-      -webkit-user-select: none; user-select: none;
-    }
-    .split-handle span {
-      width: 44px; height: 4px; border-radius: 2px;
-      background: var(--line-strong);
-      transition: background-color .15s, width .15s;
-    }
-    .split-handle:hover span, .split-handle.dragging span { width: 60px; background: var(--accent); }
-    .split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 8px; }
+  .split-handle {
+    display: flex; align-items: center; justify-content: center;
+    height: 22px; flex-shrink: 0;
+    cursor: row-resize;
+    touch-action: none;
+    -webkit-user-select: none; user-select: none;
+  }
+  .split-handle span {
+    width: 52px; height: 4px; border-radius: 2px;
+    background: var(--line-strong);
+    transition: background-color .15s, width .15s;
+  }
+  .split-handle:hover span, .split-handle.dragging span { width: 68px; background: var(--accent); }
+  .split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 8px; }
+  @media (max-width: 959px) {
     .inspector-head { padding-top: 2px; }
   }
 
@@ -487,7 +483,7 @@
   @media (max-width: 720px) { .suggest-top { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
   .suggest-figure { margin: 0; }
   .suggest-figure img {
-    display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+    display: block; width: 100%; aspect-ratio: var(--canvas-ratio); object-fit: contain; object-position: center bottom;
     border-radius: var(--r-lg); background: var(--stage-bg);
   }
   .suggest-form { display: flex; flex-direction: column; gap: 10px; }
@@ -568,7 +564,7 @@
   .close { width: 30px; height: 30px; border-radius: 50%; background: var(--raised); color: var(--muted); display: grid; place-items: center; flex-shrink: 0; }
   .close:hover { background: var(--hover); color: var(--text); }
   .close svg { width: 14px; height: 14px; }
-  #share-preview { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-md); background: var(--raised); margin-bottom: 16px; }
+  #share-preview { display: block; width: min(100%, 250px); margin-inline: auto; aspect-ratio: var(--canvas-ratio); object-fit: contain; object-position: center bottom; border-radius: var(--r-md); background: var(--raised); margin-bottom: 16px; }
   .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .share-btn {
     display: flex; align-items: center; gap: 10px;
@@ -879,7 +875,8 @@
 
   const CACHE_KEY = 'controverse:tree:v1';
   const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
-  const EXPORT_SIZE = 1600;
+  const EXPORT_W = 1350;
+  const EXPORT_H = 1800;
 
   /* =====================================================================
      APP
@@ -892,7 +889,9 @@
     tabs: $('tabs'), grid: $('grid'), workspace: document.querySelector('.workspace'),     infoButton: $('info-button'), infoPanel: $('info-panel'), infoList: $('info-list'),
     backdrop: $('stage-backdrop'),
     main: document.querySelector('main.workspace'),
-    splitHandle: $('split-handle'),
+    splitHandles: [$('split-handle')],
+    stageCol: document.querySelector('.stage-col'),
+    swatchBar: document.querySelector('.swatch-bar'),
     suggest: $('suggest-view'), suggestBack: $('suggest-back'), suggestImage: $('suggest-image'),
     suggestForm: $('suggest-form'), suggestName: $('suggest-name'), suggestWord: $('suggest-word'),
     suggestAdd: $('suggest-add'), suggestWords: $('suggest-words'), suggestError: $('suggest-error'),
@@ -1167,30 +1166,48 @@
      left, so the gallery grows as the portrait shrinks.
      --------------------------------------------------------------- */
   const SPLIT_KEY = 'controverse:split';
-  const SPLIT_MIN = 132;   // keeps the column of buttons inside the portrait
+  const SPLIT_MIN = 96;    // the narrowest the canvas may get (its width)
+  const TALL = 4 / 3;      // canvas height = width x 4/3
   const PICKER_MIN = 240;
 
-  const canSplit = () => window.matchMedia('(max-width: 959px) and (orientation: portrait)').matches;
+  const isWide = () => window.matchMedia('(min-width: 960px)').matches;
+  const canSplit = () => true;   // both layouts have a bar now
 
   function splitRange() {
     const box = els.workspace.getBoundingClientRect();
-    const max = Math.max(SPLIT_MIN + 40, Math.min(box.width, box.height - PICKER_MIN));
+    if (isWide()) {
+      const cs = getComputedStyle(els.workspace);
+      const gap = parseFloat(cs.columnGap) || 24;
+      const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      // whatever the column holds besides the canvas: the colours and the bar.
+      // Measured from those elements, because the column itself is stretched to full height.
+      const rows = parseFloat(getComputedStyle(els.stageCol).rowGap) || 14;
+      const extra = (els.swatchBar ? els.swatchBar.offsetHeight : 0) + rows;
+      const byWidth = box.width - 360 - gap;          // the picker keeps its minimum
+      const byHeight = (box.height - padY - extra) / TALL;
+      return { min: 200, max: Math.max(240, Math.min(byWidth, byHeight)) };
+    }
+    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width, (box.height - PICKER_MIN) / TALL));
     return { min: SPLIT_MIN, max };
   }
 
   function defaultStageSize() {
     const box = els.workspace.getBoundingClientRect();
-    return Math.min(box.width, window.innerHeight * 0.34);
+    const { min, max } = splitRange();
+    const wish = isWide() ? max : (window.innerHeight * 0.44) / TALL;
+    return Math.min(max, Math.max(min, wish));
   }
 
   function setStageSize(px, { save = true } = {}) {
     const { min, max } = splitRange();
     const size = Math.round(Math.min(max, Math.max(min, px)));
     els.workspace.style.setProperty('--stage-size', `${size}px`);
-    els.splitHandle.setAttribute('aria-valuenow', String(size));
-    els.splitHandle.setAttribute('aria-valuemin', String(min));
-    els.splitHandle.setAttribute('aria-valuemax', String(max));
-    if (save) { try { localStorage.setItem(SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
+    for (const h of els.splitHandles) {
+      h.setAttribute('aria-valuenow', String(size));
+      h.setAttribute('aria-valuemin', String(min));
+      h.setAttribute('aria-valuemax', String(max));
+    }
+    if (save) { try { localStorage.setItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
     return size;
   }
 
@@ -1204,7 +1221,19 @@
   }
 
   function bindSplit() {
-    const handle = els.splitHandle;
+    for (const handle of els.splitHandles) bindHandle(handle);
+    applySplit();
+    window.addEventListener('resize', applySplit);
+    window.addEventListener('orientationchange', () => setTimeout(applySplit, 120));
+  }
+
+  function applySplit() {
+    let saved = null;
+    try { saved = Number(localStorage.getItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
+    setStageSize(saved || defaultStageSize(), { save: false });
+  }
+
+  function bindHandle(handle) {
     let start = null;
 
     handle.addEventListener('pointerdown', (e) => {
@@ -1217,7 +1246,7 @@
 
     handle.addEventListener('pointermove', (e) => {
       if (!start) return;
-      const next = start.size + (e.clientY - start.y);
+      const next = start.size + (e.clientY - start.y) / TALL;
       if (Math.abs(e.clientY - start.y) > 2) start.moved = true;
       setStageSize(next, { save: false });
     });
@@ -1254,16 +1283,6 @@
       e.preventDefault();
     });
 
-    const apply = () => {
-      if (!canSplit()) { els.workspace.style.removeProperty('--stage-size'); return; }
-      let saved = null;
-      try { saved = Number(localStorage.getItem(SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
-      if (saved) setStageSize(saved, { save: false });
-      else setStageSize(defaultStageSize(), { save: false });
-    };
-    apply();
-    window.addEventListener('resize', apply);
-    window.addEventListener('orientationchange', () => setTimeout(apply, 120));
   }
 
 
@@ -1794,11 +1813,12 @@
 
   async function renderImage() {
     const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = EXPORT_SIZE;
+    canvas.width = EXPORT_W;
+    canvas.height = EXPORT_H;
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingQuality = 'high';
     ctx.fillStyle = (bgByName.get(state.bg) || BACKGROUNDS[0]).color;
-    ctx.fillRect(0, 0, EXPORT_SIZE, EXPORT_SIZE);
+    ctx.fillRect(0, 0, EXPORT_W, EXPORT_H);
     for (const key of LAYER_ORDER) {
       const img = state.layers[key];
       if (img.hidden || !img.getAttribute('src')) continue;
@@ -1807,13 +1827,13 @@
       // so an SVG layer simply fills the frame; a PNG keeps its own proportions.
       const src = img.getAttribute('src') || '';
       const isSvg = /\.svg($|[?#])/i.test(src) || src.startsWith('data:image/svg');
-      const nw = isSvg ? EXPORT_SIZE : img.naturalWidth;
-      const nh = isSvg ? EXPORT_SIZE : img.naturalHeight;
+      const nw = isSvg ? 1 : img.naturalWidth;
+      const nh = isSvg ? 1 : img.naturalHeight;
       if (!nw || !nh) continue;
-      const scale = Math.min(EXPORT_SIZE / nw, EXPORT_SIZE / nh);
+      const scale = Math.min(EXPORT_W / nw, EXPORT_H / nh);
       const w = nw * scale, h = nh * scale;
       try {
-        ctx.drawImage(img, (EXPORT_SIZE - w) / 2, (EXPORT_SIZE - h) / 2, w, h);
+        ctx.drawImage(img, (EXPORT_W - w) / 2, EXPORT_H - h, w, h);
       } catch (err) {
         console.warn('Could not add layer to the export:', img.src, err);
       }
