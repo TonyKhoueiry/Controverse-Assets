@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Lower_Face" data-name="Lower Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #daa9a3;
+      }
+
+      .cls-2 {
+        fill: #995959;
+      }
+
+      .cls-3 {
+        fill: #e5b6b3;
+      }
+
+      .cls-4, .cls-5 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-6 {
+        opacity: .23;
+      }
+
+      .cls-7, .cls-5 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Andy_Warhol" data-name="Andy Warhol">
+    <g id="Warhol">
+      <g>
+        <g>
+          <g id="Ursula">
+            <polyline class="cls-1" points="162 261 162 342 189 342 189 503.82 315 503.82 315 342 342 342 342 261 252 252 162 261"/>
+            <g>
+              <g>
+                <polygon class="cls-2" points="270 288 252 297 234 288 198 306 252 306 306 306 270 288"/>
+                <polygon class="cls-3" points="306 306 252 306 198 306 216 315 288 315 306 306"/>
+                <polygon class="cls-6" points="297 333 207 333 234 324 220.77 315.98 288 315 270 324 297 333"/>
+              </g>
+              <polyline class="cls-4" points="315 306 306 306 252 306 198 306 189 306"/>
+            </g>
+          </g>
+          <polygon class="cls-6" points="279 360 225 360 189 342 189 387 315 360 315 342 279 360"/>
+        </g>
+        <polygon class="cls-7" points="243 279 252 288 261 279 252 261 243 279"/>
+      </g>
+      <polyline class="cls-5" points="315 315 315 306 306 297"/>
+      <polyline class="cls-5" points="189 315 189 306 198 297"/>
+    </g>
+  </g>
+</svg>
