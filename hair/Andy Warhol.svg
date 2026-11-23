@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Hair" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #c4bfb3;
+      }
+
+      .cls-2 {
+        fill: #dddad0;
+      }
+
+      .cls-3 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Andy_Warhol" data-name="Andy Warhol">
+    <g id="Warhol_H_" data-name="Warhol (H)">
+      <g>
+        <polyline class="cls-2" points="342 108 387 117 405 144 342 108"/>
+        <g>
+          <polygon class="cls-2" points="378 297 351 261 342 297 342 108 288 108 162 189 162 207 153 207 126 234 126 261 162 261 162 315 153 297 135 297 117 243 99 261 126 207 81 234 144 171 90 216 117 126 171 63 306 70.11 342 90 342 108 387 144 414 225 378 225 378 297"/>
+          <polyline class="cls-1" points="342 153 414 225 351 171 378 225 342 180"/>
+          <polygon class="cls-3" points="90 216 144 171 252 108 324 99 225 108 153 153 90 216"/>
+        </g>
+        <polygon class="cls-3" points="99 225 126 207 144 198 99 261 117 243 126 234 153 207 162 207 162 189 279 117 342 108 288 108 162 171 117 198 144 189 99 225"/>
+        <polygon class="cls-3" points="135 297 126 252 126 261 162 261 162 315 153 297 135 297"/>
+        <polygon class="cls-1" points="342 216 378 297 351 306 342 315 342 216"/>
+        <polygon class="cls-2" points="342 90 324 45 288 36 324 54 342 90"/>
+        <polygon class="cls-2" points="342 90 306 63 225 36 288 63 342 90"/>
+      </g>
+      <polygon class="cls-3" points="144 135 234 90 198 99 144 135"/>
+    </g>
+  </g>
+</svg>
