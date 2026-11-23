@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #dddad0;
+      }
+
+      .cls-2 {
+        opacity: .2;
+      }
+
+      .cls-3 {
+        fill: #0c0c0c;
+      }
+
+      .cls-4 {
+        fill: #bf2d06;
+      }
+    </style>
+  </defs>
+  <g id="Andy_Warhol" data-name="Andy Warhol">
+    <g id="Zelenski_C_" data-name="Zelenski (C)">
+      <polygon class="cls-3" points="351 386.75 315 386.75 315 422.75 252 449.75 189 422.75 189 386.75 153 386.75 153 504 351 504 351 386.75"/>
+    </g>
+    <polygon class="cls-1" points="314.98 504 189 504 189 369 252 414 314.98 369 314.98 504"/>
+    <polygon class="cls-4" points="261 414 243 414 234 504 261 504 252 432 261 414"/>
+    <polygon class="cls-2" points="207 468 243 414 252 414 261 414 297 459 306 396 297 468 252 423 207 468"/>
+  </g>
+</svg>
