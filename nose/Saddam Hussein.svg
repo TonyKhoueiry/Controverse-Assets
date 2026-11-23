@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #c68d70;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-3 {
+        opacity: .23;
+      }
+    </style>
+  </defs>
+  <g id="Saddam_Hussein" data-name="Saddam Hussein">
+    <g id="Saddam">
+      <polygon class="cls-1" points="342 99 342 189 342 261 369 261 396 261 396 216 342 99"/>
+      <polygon class="cls-3" points="396 261 378 243 342 252 342 261 396 261"/>
+      <line class="cls-2" x1="342" y1="153" x2="360" y2="153"/>
+      <line class="cls-2" x1="342" y1="162" x2="360" y2="162"/>
+    </g>
+  </g>
+</svg>
