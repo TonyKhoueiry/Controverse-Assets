@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Top_Face" data-name="Top Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d59797;
+        opacity: .54;
+      }
+
+      .cls-2 {
+        stroke: #53a9dc;
+        stroke-width: 2px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4, .cls-3 {
+        opacity: .2;
+      }
+
+      .cls-5 {
+        fill: #0a140b;
+      }
+
+      .cls-6 {
+        fill: #dfafa0;
+      }
+
+      .cls-3 {
+        stroke: #000;
+      }
+    </style>
+  </defs>
+  <g id="Lady_Diana" data-name="Lady Diana">
+    <g>
+      <g>
+        <polygon class="cls-6" points="342 108 351 189 342 261 162 261 162 261 126 261 126 207 162 207 162 108 342 108"/>
+        <rect class="cls-1" x="306" y="216" width="27" height="36"/>
+        <rect class="cls-1" x="171" y="216" width="27" height="36"/>
+        <polygon class="cls-5" points="279 207 225 207 198 207 252 189 252 189 306 207 279 207"/>
+        <line class="cls-2" x1="198" y1="207" x2="306" y2="207"/>
+        <polyline class="cls-3" points="225 216 252 216 279 216"/>
+      </g>
+      <g>
+        <g class="cls-4">
+          <polygon points="288 180 261 180 297 171 315 180 288 180"/>
+        </g>
+        <g class="cls-4">
+          <polygon points="216 180 189 180 207 171 243 180 216 180"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
