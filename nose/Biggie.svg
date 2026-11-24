@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #77443a;
+      }
+
+      .cls-2 {
+        fill: #89534c;
+      }
+
+      .cls-3 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Biggie">
+    <g>
+      <g>
+        <g id="Ursula">
+          <polygon class="cls-1" points="342 108 342 261 396 252 396 198 369 180 342 108"/>
+        </g>
+        <polygon class="cls-3" points="342 252 342 243 369 252 342 252"/>
+      </g>
+      <polygon class="cls-2" points="378 216 396 198 396 234 378 216"/>
+    </g>
+  </g>
+</svg>
