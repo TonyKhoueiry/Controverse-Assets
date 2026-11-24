@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Nose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d49696;
+      }
+
+      .cls-1, .cls-2 {
+        opacity: .54;
+      }
+
+      .cls-3 {
+        fill: #e0b0a1;
+      }
+
+      .cls-2 {
+        fill: #d69898;
+      }
+
+      .cls-4 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Lady_D_N_" data-name="Lady D (N)">
+    <polygon class="cls-3" points="342 261 342 108 378 180 396 261 342 261"/>
+    <polygon class="cls-1" points="378 180 387 225 360 144 378 180"/>
+    <g class="cls-4">
+      <polygon points="342 261 342 252 378 261 342 261"/>
+    </g>
+    <rect class="cls-2" x="342" y="180" width="18" height="18"/>
+  </g>
+</svg>
