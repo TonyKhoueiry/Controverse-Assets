@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Hair" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d2b990;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        opacity: .2;
+      }
+
+      .cls-4 {
+        opacity: .3;
+      }
+
+      .cls-5 {
+        opacity: .3;
+      }
+
+      .cls-6 {
+        fill: #e6c790;
+      }
+    </style>
+  </defs>
+  <g id="Lady_Diana" data-name="Lady Diana">
+    <g>
+      <g>
+        <g>
+          <polyline class="cls-6" points="162 297 162 261 126 261 162 297"/>
+          <g>
+            <polygon class="cls-1" points="387 99 315 45 297 45 288 36 171 45 108 108 108 171 126 225 126 207 144 207 162 225 162 180 198 180 234 162 216 180 279 180 342 117 342 297 378 252 387 171 387 99"/>
+            <g class="cls-5">
+              <polygon points="387 99 324 63 378 117 342 99 378 153 378 252 387 171 387 99"/>
+            </g>
+            <polyline class="cls-5" points="162 297 162 261 126 261 162 297"/>
+            <g class="cls-4">
+              <polygon points="342 108 369 171 351 144 369 216 351 189 378 252 342 297 342 108"/>
+            </g>
+            <g class="cls-4">
+              <polygon points="342 108 297 45 297 45 288 36 171 54 261.88 54 189 72 261 64 171 99 261 74.45 297 72 261 81 171 117 261 90 306 81 261 99 198 126 261 108 315 90 261 117 225 135 324 99 261 153 342 108"/>
+            </g>
+            <g class="cls-5">
+              <polygon points="207 153 279 126 252 144 207 153"/>
+            </g>
+            <g class="cls-5">
+              <polygon points="135 126 115.71 162 108 108 108 171 126 225 126 207 135 207 144 207 162 225 162 180 135 180 162 144 126 162 135 126"/>
+            </g>
+          </g>
+        </g>
+        <polygon class="cls-3" points="270 198 342 117 279 180 216 180 234 162 198 180 162 180 135 180 270 198"/>
+      </g>
+      <g>
+        <rect class="cls-2" x="126" y="252" width="9" height="9"/>
+        <rect class="cls-2" x="126" y="270" width="18" height="18"/>
+      </g>
+    </g>
+  </g>
+</svg>
