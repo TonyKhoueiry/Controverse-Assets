@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Hair" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e6e6e6;
+      }
+
+      .cls-2 {
+        fill: #4d4d4d;
+      }
+
+      .cls-3 {
+        opacity: .44;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #999;
+      }
+
+      .cls-5 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Biggie">
+    <g id="Biggie-2" data-name="Biggie">
+      <g>
+        <polygon class="cls-5" points="342 108 162 171 162 144 342 108"/>
+        <polygon class="cls-1" points="342 72 270 49.5 198 63 162 99 125.25 162 99 198 99 207 252 144 342 108 342 72"/>
+      </g>
+      <polygon class="cls-4" points="99 207 162 180 162 207 99 207"/>
+      <polygon class="cls-3" points="99 207 153 171 180 162 270 135 342 108 234 126 207 144 180 144 153 162 99 207"/>
+      <polygon class="cls-3" points="225 81 189 135 207 135 225 81"/>
+      <polygon class="cls-2" points="126 198 162 180 162 198 126 198"/>
+      <polygon class="cls-3" points="270 63 324 72 297 81 270 63"/>
+      <polyline class="cls-4" points="99 207 144 180 162 171 252 144 99 207"/>
+    </g>
+    <polygon class="cls-5" points="162 207 252 207 342 108 252 144 162 180 162 207"/>
+  </g>
+</svg>
