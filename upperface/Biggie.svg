@@ -27,7 +27,7 @@
   </defs>
   <g id="Biggie">
     <g>
-      <polygon class="cls-1" points="342 108 162 108 162 207 126 207 126 261 162 261 342 261 342 108"/>
+      <polygon class="cls-1" points="342 108 162 108 162 207 126 207 126 261 162 261 342 261 351 180 342 108"/>
       <g>
         <polyline class="cls-3" points="225 225 252 207 279 225"/>
         <rect class="cls-2" x="297" y="225" width="18" height="18"/>
