@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Lower_Face" data-name="Lower Face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: #875742;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        fill: none;
+      }
+
+      .cls-1, .cls-3 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-5 {
+        fill: #77443a;
+      }
+
+      .cls-6 {
+        fill: #89534c;
+      }
+
+      .cls-2 {
+        stroke: #000;
+      }
+
+      .cls-2, .cls-4 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3 {
+        stroke: #6d4537;
+      }
+
+      .cls-7 {
+        opacity: .2;
+      }
+
+      .cls-4 {
+        stroke: #513631;
+        stroke-width: 2.83px;
+      }
+
+      .cls-8 {
+        fill: #8e5c52;
+      }
+
+      .cls-9 {
+        fill: #af775f;
+      }
+
+      .cls-10 {
+        fill: #9b5e4e;
+      }
+    </style>
+  </defs>
+  <g id="Biggie">
+    <polyline class="cls-5" points="162 261 162 342 189 342 189 503.82 315 503.82 315 342 342 342 342 261 162 261"/>
+    <g>
+      <path class="cls-7" d="M279,324l-9-18h-36l-9,18,18-9h18l18,9Z"/>
+      <g>
+        <polygon class="cls-8" points="261 261 243 261 225 279 279 279 261 261"/>
+        <polygon class="cls-7" points="225 279 234 270 270 270 279 279 225 279"/>
+        <polygon class="cls-10" points="270 306 234 306 225 279 279 279 270 306"/>
+        <path class="cls-9" d="M260.59,262l17.27,17.27-8.58,25.73h-34.56l-8.58-25.73,17.27-17.27h17.17M261,261h-18l-18,18,9,27h36l9-27-18-18h0Z"/>
+        <polyline class="cls-4" points="225 279 234 306 270 306 279 279"/>
+        <polyline class="cls-3" points="252 279 252 288 252 279"/>
+        <polyline class="cls-1" points="252 270 252 279 252 270"/>
+        <polyline class="cls-2" points="225 279 252 279 279 279"/>
+      </g>
+      <polygon class="cls-6" points="252 324 252 324 243 315 261 315 252 324"/>
+      <polygon class="cls-7" points="315 342 342 342 342 333 279 324 261 333 243 333 225 324 162 333 162 342 189 342 189 360 252 369 315 360 315 342"/>
+    </g>
+  </g>
+</svg>
