@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Outfit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504 504">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g id="Lady_Diana" data-name="Lady Diana">
+    <g>
+      <polygon class="cls-1" points="350.52 387 315 387 315 459 189 459 189 387 153 387 153 504 351 504 350.52 387"/>
+      <rect class="cls-1" x="193.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="211.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="229.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="247.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="265.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="283.5" y="426.95" width="9" height="9"/>
+      <rect class="cls-1" x="301.5" y="426.95" width="9" height="9"/>
+      <g class="cls-2">
+        <rect x="153" y="387" width="18" height="117"/>
+      </g>
+    </g>
+  </g>
+</svg>
