@@ -142,6 +142,7 @@
   .stage {
     position: relative;
     container-type: inline-size;
+    flex: 0 0 auto;              /* never stretched by the row around it */
     width: 100%;
     max-width: 100%;
     aspect-ratio: var(--canvas-ratio);
@@ -186,7 +187,7 @@
   .stage-btn:hover { background: rgba(12, 12, 14, .78); }
   .stage-btn:active { transform: scale(.94); }
   .stage-btn svg { width: 54%; height: 54%; }
-  .stage-row { display: flex; justify-content: center; width: 100%; }
+  .stage-row { display: flex; justify-content: center; align-items: flex-start; width: 100%; }
   .stage-tools {
     position: absolute; z-index: 6;
     bottom: clamp(7px, 2.6cqw, 16px); right: clamp(7px, 2.6cqw, 16px);
@@ -412,10 +413,11 @@
     .stage {
       width: min(100%, 29vh);
       width: var(--stage-size, min(100%, 29dvh));
+      height: var(--stage-h, auto);
       --r-lg: 16px;
       transition: background-color .35s ease;
     }
-    .stage.snapping { transition: width .18s ease, background-color .35s ease; }
+    .stage.snapping { transition: width .18s ease, height .18s ease, background-color .35s ease; }
     .stage-caption { left: 10px; bottom: 10px; font-size: 11px; padding: 4px 10px; max-width: calc(100% - 64px); }
     /* the background colours get their own tab, so the swatch bar is not needed here */
     .swatch-bar { display: none; }
@@ -890,7 +892,7 @@
     suggest: $('suggest-view'), suggestBack: $('suggest-back'), suggestImage: $('suggest-image'),
     suggestForm: $('suggest-form'), suggestName: $('suggest-name'), suggestWord: $('suggest-word'),
     suggestAdd: $('suggest-add'), suggestWords: $('suggest-words'), suggestError: $('suggest-error'),
-    suggestList: $('suggest-list'), suggestCount: $('suggest-count'), gridWrap: $('grid-wrap'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
+    suggestList: $('suggest-list'), suggestCount: $('suggest-count'), gridWrap: $('grid-wrap'), inspector: document.querySelector('.inspector'), sectionTitle: $('section-title'), shuffleOne: $('shuffle-one'),
     search: $('search-input'), suggestions: $('search-suggestions'),
     shuffle: $('shuffle-button'), share: $('share-button'),
     modal: $('share-modal'), close: $('close-share-modal'), preview: $('share-preview'),
@@ -1184,8 +1186,15 @@
     }
     // On a short screen (a phone lying down) the picker cannot claim its full
     // minimum, or the portrait is left with almost nothing.
-    const pickerMin = Math.min(PICKER_MIN, box.height * 0.45);
-    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width, (box.height - pickerMin) / TALL));
+    const cs = getComputedStyle(els.workspace);
+    const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    // Keep room for the picker's search box and tabs plus one row of thumbnails,
+    // measured rather than guessed, and never more than half the screen.
+    const chrome = els.inspector && els.gridWrap
+      ? els.inspector.getBoundingClientRect().height - els.gridWrap.getBoundingClientRect().height
+      : 0;
+    const pickerMin = Math.min(box.height * 0.5, Math.max(PICKER_MIN, chrome + 96));
+    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width - padX, (box.height - pickerMin) / TALL));
     return { min: SPLIT_MIN, max };
   }
 
@@ -1222,6 +1231,7 @@
     const { min, max } = splitRange();
     const size = Math.round(Math.min(max, Math.max(min, px)));
     els.workspace.style.setProperty('--stage-size', `${size}px`);
+    els.workspace.style.setProperty('--stage-h', `${Math.round(size / TALL)}px`);
     for (const h of els.splitHandles) {
       h.setAttribute('aria-valuenow', String(size));
       h.setAttribute('aria-valuemin', String(min));
