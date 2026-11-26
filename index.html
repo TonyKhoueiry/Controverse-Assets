@@ -38,6 +38,12 @@
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   * { box-sizing: border-box; }
+  html, body { overscroll-behavior: none; }
+  /* Older iPhones have no dvh unit: fall back to the real visible height,
+     otherwise the picker ends up below the bottom of the screen. */
+  @supports not (height: 100dvh) {
+    html, body { height: -webkit-fill-available; }
+  }
   html, body { margin: 0; height: 100%; }
   body {
     background: var(--bg);
@@ -1176,7 +1182,10 @@
       const byHeight = (box.height - padY - extra) / TALL;
       return { min: 200, max: Math.max(240, Math.min(byWidth, byHeight)) };
     }
-    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width, (box.height - PICKER_MIN) / TALL));
+    // On a short screen (a phone lying down) the picker cannot claim its full
+    // minimum, or the portrait is left with almost nothing.
+    const pickerMin = Math.min(PICKER_MIN, box.height * 0.45);
+    const max = Math.max(SPLIT_MIN + 30, Math.min(box.width, (box.height - pickerMin) / TALL));
     return { min: SPLIT_MIN, max };
   }
 
@@ -1185,6 +1194,28 @@
     const { min, max } = splitRange();
     const wish = isWide() ? max : (window.innerHeight * 0.44) / TALL;
     return Math.min(max, Math.max(min, wish));
+  }
+
+  // True while a bar is being dragged, so nothing else resets the size underneath it.
+  let splitDragging = false;
+  let lastBox = { w: 0, h: 0 };
+
+  const splitKey = () => (isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY);
+
+  // Saved as a share of the workspace height, not a pixel count: a phone's
+  // address bar slides in and out and changes the height all the time.
+  function savedStageSize() {
+    let v = null;
+    try { v = Number(localStorage.getItem(splitKey())); } catch { /* storage unavailable */ }
+    if (!v) return null;
+    const box = els.workspace.getBoundingClientRect();
+    return v <= 1.5 ? v * box.height : v;   // a share, or a pixel value from an older visit
+  }
+
+  function saveStageSize(size) {
+    const box = els.workspace.getBoundingClientRect();
+    if (!box.height) return;
+    try { localStorage.setItem(splitKey(), (size / box.height).toFixed(4)); } catch { /* storage unavailable */ }
   }
 
   function setStageSize(px, { save = true } = {}) {
@@ -1196,7 +1227,7 @@
       h.setAttribute('aria-valuemin', String(min));
       h.setAttribute('aria-valuemax', String(max));
     }
-    if (save) { try { localStorage.setItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY, String(size)); } catch { /* storage unavailable */ } }
+    if (save) saveStageSize(size);
     return size;
   }
 
@@ -1211,15 +1242,25 @@
 
   function bindSplit() {
     for (const handle of els.splitHandles) bindHandle(handle);
-    applySplit();
-    window.addEventListener('resize', applySplit);
-    window.addEventListener('orientationchange', () => setTimeout(applySplit, 120));
+    applySplit({ force: true });
+    let timer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(applySplit, 120);
+    });
+    window.addEventListener('orientationchange', () => setTimeout(() => applySplit({ force: true }), 150));
   }
 
-  function applySplit() {
-    let saved = null;
-    try { saved = Number(localStorage.getItem(isWide() ? SPLIT_KEY + ':wide' : SPLIT_KEY)) || null; } catch { /* storage unavailable */ }
-    setStageSize(saved || defaultStageSize(), { save: false });
+  function applySplit({ force = false } = {}) {
+    if (splitDragging) return;                       // never fight the finger
+    const box = els.workspace.getBoundingClientRect();
+    const set = els.workspace.style.getPropertyValue('--stage-size');
+    const barOnly = Math.abs(box.width - lastBox.w) < 1 && Math.abs(box.height - lastBox.h) < 150;
+    lastBox = { w: box.width, h: box.height };
+    // A phone hiding or showing its address bar only changes the height a little:
+    // keep the size the reader chose instead of recalculating it.
+    if (!force && set && barOnly) return;
+    setStageSize(savedStageSize() || defaultStageSize(), { save: false });
   }
 
   function bindHandle(handle) {
@@ -1228,7 +1269,8 @@
     handle.addEventListener('pointerdown', (e) => {
       if (!canSplit()) return;
       start = { y: e.clientY, size: els.stage.getBoundingClientRect().width, moved: false };
-      handle.setPointerCapture(e.pointerId);
+      splitDragging = true;
+      try { handle.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
       handle.classList.add('dragging');
       e.preventDefault();
     });
@@ -1243,8 +1285,12 @@
     const end = () => {
       if (!start) return;
       handle.classList.remove('dragging');
-      if (start.moved) snapStageSize(els.stage.getBoundingClientRect().width);
+      const moved = start.moved;
       start = null;
+      splitDragging = false;
+      const size = els.stage.getBoundingClientRect().width;
+      if (moved) snapStageSize(size); else saveStageSize(size);
+      lastBox = { w: els.workspace.getBoundingClientRect().width, h: els.workspace.getBoundingClientRect().height };
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
@@ -1255,6 +1301,7 @@
       if (start) return;
       const t = e.touches[0];
       start = { y: t.clientY, size: els.stage.getBoundingClientRect().width, moved: false, touch: true };
+      splitDragging = true;
       handle.classList.add('dragging');
       e.preventDefault();
     }, { passive: false });
